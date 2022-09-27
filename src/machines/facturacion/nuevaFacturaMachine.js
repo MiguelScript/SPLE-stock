@@ -4,8 +4,10 @@ import api from "../../config/api";
 export const nuevaFacturaMachine = Machine(
     {
         id: "nuevaFacturaMachine",
-        initial: "editInvoice",
+        initial: "fetchData",
         context: {
+            customerId: null,
+            sellerId: null,
             responseMsg: "",
             products: [
                 {
@@ -21,13 +23,79 @@ export const nuevaFacturaMachine = Machine(
                 },
             ],
             subtotal: 0,
+            customers: [
+                {
+                    id: 1,
+                    code: 'CLI1',
+                    name: 'Pedro Perez',
+                },
+                {
+                    id: 2,
+                    code: 'CLI2',
+                    name: 'Fulanito Perez',
+                }
+            ],
+            sellers: [
+                {
+                    id: 1,
+                    code: 'VEN1',
+                    name: 'Miguel Acosta',
+                },
+                {
+                    id: 2,
+                    code: 'VEN2',
+                    name: 'Karelys Acosta',
+                }
+            ],
+            paymentMethods: [
+                {
+                    id: 1,
+                    name: 'Dolares efectivo',
+                },
+                {
+                    id: 2,
+                    name: 'Pago movil',
+                }
+            ]
         },
         states: {
+            fetchData: {
+                invoke: {
+                    src: (_ctx, evt) =>
+                        new Promise(async (resolve, reject) => {
+                            const token = localStorage.token;
+                            if (token) {
+                                try {
+                                    const { data: dt, /* status */ } = await api.get(
+                                        "api/ventas/nueva", {
+                                        headers: { Authorization: `Bearer ${token}` },
+                                    });
+                                    resolve(dt.data);
+                                } catch (e) {
+                                    reject({
+                                        msg:
+                                            "Ha ocurrido un error. Verifica tu conexión a internet.",
+                                    });
+                                }
+                            } else {
+                                reject("No hay token");
+                            }
+                        }),
+                    onDone: {
+                        target: "editInvoice",
+                        actions: ["setGeneralData", "setResponseMsg"],
+                    },
+                    onError: { target: "dataError", actions: "setResponseMsg" },
+                },
+            },
             editInvoice: {
                 on: {
                     ADDPRODUCT: {
                         actions: ["addProductToInvoice", "updatePrice"],
                     },
+                    SETCUSTOMER: { actions: "setCustomer" },
+                    SETSELLER: { actions: "setSeller" },
+                    SETPAYMENTMETHOD: { actions: "setPaymentMethod" },
                     REMOVEPRODUCT: { actions: ["removeProductFromCart", "updatePrice"] },
                     HANDLEVISIBLE: { actions: "handleVisible" },
                     CHANGEQUANTITY: { actions: ["changeProductQuantity", "updatePrice"] },
@@ -96,6 +164,20 @@ export const nuevaFacturaMachine = Machine(
     },
     {
         actions: {
+            setGeneralData: assign({
+                customers: (_ctx, evt) => evt.data.customers,
+                sellers: (_ctx, evt) => evt.data.sellers,
+                paymentMethods: (_ctx, evt) => evt.data.paymentMethods,
+            }),
+            setCustomer: assign({
+                customerId: (_ctx, evt) => evt.customerId,
+            }),
+            setSeller: assign({
+                sellerId: (_ctx, evt) => evt.sellerId,
+            }),
+            setPaymentMethod: assign({
+                paymentMethodId: (_ctx, evt) => evt.paymentMethodId,
+            }),
             addProductToInvoice: assign({
                 products: (_ctx, evt) => {
                     //evt.value.quantity = 1;

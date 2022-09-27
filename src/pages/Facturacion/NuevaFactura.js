@@ -1,5 +1,6 @@
-import React, { useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useMachine } from "@xstate/react";
+import Select from 'react-select';
 // import { BackgroundFactura, BackgroundFooterFactura } from '../../components/Factura/Paper';
 import {
     useTheme,
@@ -29,6 +30,9 @@ import { CustomModal } from "../../components/Common/reusable-modal";
 import AddProductModal from './AddProductModal'
 import Invoice from "../../components/Invoice/Invoice";
 import { useHistory } from 'react-router-dom';
+import SelectCustomer from './SelectCustomer';
+import SelectSeller from './SelectSeller';
+import SelectPaymentMethod from './SelectPaymentMethod';
 
 
 
@@ -98,7 +102,7 @@ const NuevaFactura = () => {
                     color="primary"
                     variant="contained"
                     onClick={() => {
-                        history.push("/facturacion");                  
+                        history.push("/facturacion");
                     }}
                 >
                     Volver
@@ -107,6 +111,49 @@ const NuevaFactura = () => {
 
             <NewInvoiceHeader elevation={0}>
                 <Row>
+                    <Col md={1}>
+                        Cliente:
+                    </Col>
+                    <Col md={3}>
+                        <SelectCustomer
+                            options={current.context.customers}
+                            setCustomer={(customerId) => send({
+                                type: "SETCUSTOMER",
+                                customerId: customerId,
+                            })}
+                        />
+                    </Col>
+                    <Col md={1}>
+                        Vendedor:
+                    </Col>
+                    <Col md={3}>
+                        <SelectSeller
+                            options={current.context.sellers}
+                            setSeller={(sellerId) => send({
+                                type: "SETSELLER",
+                                sellerId: sellerId,
+                            })}
+                        />
+                    </Col>
+                    <Col md={1}>
+                        <Typography>
+                            M.Pago:
+                        </Typography>
+                    </Col>
+                    <Col md={3}>
+                        <SelectPaymentMethod
+                            options={current.context.paymentMethods}
+                            setPaymentMethod={(paymentMethodId) => send({
+                                type: "SETPAYMENTMETHOD",
+                                paymentMethodId: paymentMethodId,
+                            })}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+
+                </Row>
+                <Row className='mt-4'>
                     <Col md={10}>
                         <Button
                             variant="contained"
@@ -156,7 +203,7 @@ const NuevaFactura = () => {
             <Invoice
                 products={current.context.products}
                 currency={currency}
-                removeProduct={(product) => {handleRemoveProduct(product)}}
+                removeProduct={(product) => { handleRemoveProduct(product) }}
             />
             <ActionsFooter
                 total={current.context.subtotal}
