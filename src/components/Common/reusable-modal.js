@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import {
@@ -56,12 +56,15 @@ function ReusableModal() {
 
 
   useEffect(() => {
-    if(reusableModalState.matches("openedModal")){
+    console.log(reusableModalState);
+
+    if (reusableModalState.matches("openedModal")) {
       console.log("modal abierto");
-    } else{
-      console.log(ReusableModalStateContext);
+      console.log(reusableModalState?.currentNewInvoice?.context?.products);
+
+    } else {
     }
-  }, [ReusableModalStateContext])
+  }, [reusableModalState])
 
   const theme = useTheme();
 
@@ -74,25 +77,48 @@ function ReusableModal() {
           theme={theme}
           {...reusableModalState.context.modalOptions}
         >
-          {reusableModalState.context.component &&
+          {reusableModalState.context.component && (
+            <reusableModalState.context.component
+              {...reusableModalState.context.modalProps}
+              closeModal={handleClose}
+            >
+
+            </reusableModalState.context.component>)}
+          {/* {reusableModalState.context.component &&
             React.createElement(reusableModalState.context.component, {
               ...reusableModalState.context.modalProps,
               closeModal: handleClose,
-            })}
+            })} */}
         </ModalS>
       ) : (
-        React.createElement(reusableModalState.context.customModal, {
-          children: reusableModalState.context.component &&
-            React.createElement(reusableModalState.context.component, {
-              ...reusableModalState.context.modalProps,
-              closeModal: handleClose,
-            }),
-          show: reusableModalState.matches("openedModal"),
-          onHide: handleClose,
-          theme: theme,
-          ...reusableModalState.context.modalOptions
-        })
-      )}
+        <customModal
+          show={reusableModalState.matches("openedModal")}
+          onHide={handleClose}
+          theme={theme}
+          {...reusableModalState.context.modalOptions}
+        >
+          {reusableModalState.context.component && (
+            <reusableModalState.context.component
+              {...reusableModalState.context.modalProps}
+              closeModal={handleClose}
+            >
+
+            </reusableModalState.context.component>
+          )}
+        </customModal>
+        //     React.createElement(reusableModalState.context.customModal, {
+        //     children: reusableModalState.context.component &&
+        //   React.createElement(reusableModalState.context.component, {
+        //     ...reusableModalState.context.modalProps,
+        //     closeModal: handleClose,
+        //     }),
+        //   show: reusableModalState.matches("openedModal"),
+        //   onHide: handleClose,
+        //   theme: theme,
+        //   ...reusableModalState.context.modalOptions
+        // })
+      )
+      }
     </>
   );
 }

@@ -28,6 +28,7 @@ const reusableModalMachine = Machine(
           CLOSEMODAL: {
             target: "closedModal",
           },
+          UPDATEPROPS: { actions: "updateProps" },
         },
       },
     },
@@ -39,6 +40,11 @@ const reusableModalMachine = Machine(
         component: (_ctx, evt) => evt.component,
         modalOptions: (_ctx, evt) => evt.modalOptions ? (evt.modalOptions) : {},
         customModal: (_ctx, evt) => evt.customModal
+      }),
+      updateProps: assign({
+        modalProps: (_ctx, evt) => {
+          return { ..._ctx.modalProps, ...evt.modalProps }
+        },
       }),
     },
   }

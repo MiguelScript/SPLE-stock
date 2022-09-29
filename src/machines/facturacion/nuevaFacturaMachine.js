@@ -199,6 +199,7 @@ export const nuevaFacturaMachine = Machine(
                     let productToEdit = _ctx.products.find(
                         (product) => product.id === evt.value.id
                     );
+                    console.log(productToEdit)
                     if (evt.fromInput) {
                         if (evt.quantity !== 0) {
                             productToEdit.quantity = evt.quantity;

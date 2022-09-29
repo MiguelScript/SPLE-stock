@@ -9,7 +9,15 @@ import Paper from '@material-ui/core/Paper';
 
 export const NewInvoiceHeader = styled(Paper)`
     padding: 20px;
+`;
 
+export const SelectNewInvoiceHeader = styled.div`
+  display: flex;
+
+  .select-new-invoice-header{
+    flex: 1;
+  }
+  
 `;
 
 export const DataGridContainer = styled.div`
@@ -77,4 +85,6 @@ export const SwicthContainer = styled.div`
   align-items: center;
   height: 100%;
 `;
+
+
 

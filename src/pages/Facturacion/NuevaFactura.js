@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import { Row, Col, FormControl } from "react-bootstrap";
 import AgregarProducto from './AgregarProducto';
-import { DataGridContainer, NewInvoiceHeader, ProductsGrid, SwicthContainer } from '../../components/NewInvoice/NewInvoice.styles';
+import { DataGridContainer, NewInvoiceHeader, ProductsGrid, SwicthContainer, SelectNewInvoiceHeader } from '../../components/NewInvoice/NewInvoice.styles';
 import { nuevaFacturaMachine } from '../../machines/facturacion/nuevaFacturaMachine';
 import { isEmpty } from "lodash";
 import ItemFactura from './ItemFactura'
@@ -92,6 +92,14 @@ const NuevaFactura = () => {
 
     useEffect(() => {
         console.log(current.context.products);
+        modalDispatch(
+            {
+                type: "UPDATEPROPS",
+                modalProps: {
+                    currentNewInvoice: current,
+                },
+            }
+        )
     }, [current.context.products]);
 
     return (
@@ -111,43 +119,55 @@ const NuevaFactura = () => {
 
             <NewInvoiceHeader elevation={0}>
                 <Row>
-                    <Col md={1}>
-                        Cliente:
+                    <Col xl={4}>
+                        <div>
+                            <Typography
+                                variant='h6'
+                            >
+                                Cliente
+                            </Typography>
+                            <SelectCustomer
+                                options={current.context.customers}
+                                setCustomer={(customerId) => send({
+                                    type: "SETCUSTOMER",
+                                    customerId: customerId,
+                                })}
+                            />
+                        </div>
                     </Col>
-                    <Col md={3}>
-                        <SelectCustomer
-                            options={current.context.customers}
-                            setCustomer={(customerId) => send({
-                                type: "SETCUSTOMER",
-                                customerId: customerId,
-                            })}
-                        />
+                    <Col xl={4}>
+                        <div>
+                            <Typography
+                                variant='h6'
+                                className='mr-1'
+                            >
+                                Vendedor
+                            </Typography>
+                            <SelectSeller
+                                options={current.context.sellers}
+                                setSeller={(sellerId) => send({
+                                    type: "SETSELLER",
+                                    sellerId: sellerId,
+                                })}
+                            />
+                        </div>
+
                     </Col>
-                    <Col md={1}>
-                        Vendedor:
-                    </Col>
-                    <Col md={3}>
-                        <SelectSeller
-                            options={current.context.sellers}
-                            setSeller={(sellerId) => send({
-                                type: "SETSELLER",
-                                sellerId: sellerId,
-                            })}
-                        />
-                    </Col>
-                    <Col md={1}>
-                        <Typography>
-                            M.Pago:
-                        </Typography>
-                    </Col>
-                    <Col md={3}>
-                        <SelectPaymentMethod
-                            options={current.context.paymentMethods}
-                            setPaymentMethod={(paymentMethodId) => send({
-                                type: "SETPAYMENTMETHOD",
-                                paymentMethodId: paymentMethodId,
-                            })}
-                        />
+                    <Col xl={4}>
+                        <div>
+                            <Typography
+                                variant='h6'
+                            >
+                                M.Pago:
+                            </Typography>
+                            <SelectPaymentMethod
+                                options={current.context.paymentMethods}
+                                setPaymentMethod={(paymentMethodId) => send({
+                                    type: "SETPAYMENTMETHOD",
+                                    paymentMethodId: paymentMethodId,
+                                })}
+                            />
+                        </div>
                     </Col>
                 </Row>
                 <Row>
@@ -159,7 +179,6 @@ const NuevaFactura = () => {
                             variant="contained"
                             color="secondary"
                             onClick={() => {
-                                console.log("click en boton para abrir modal");
                                 modalDispatch(
                                     {
                                         type: "OPENMODAL",

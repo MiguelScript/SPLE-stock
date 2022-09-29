@@ -84,7 +84,7 @@ function SearchProductModal({
 
     useEffect(() => {
         //console.log(children);
-        if (toggled == true) {
+        if (toggled === true) {
             setcurrency(
                 {
                     prefix: "Bs.S",

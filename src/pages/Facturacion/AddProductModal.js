@@ -4,11 +4,12 @@ import styled from "styled-components";
 import SearchProductModal from '../../components/Layout/Modal/SearchProductModal'
 import NumberFormat from 'react-number-format';
 import { ProductsGrid, DataGridContainer, ProductsTable, DataGridHeader, ProductsTableBody } from "../../components/Layout/Modal/SearchProductModel.styles";
-import { ButtonBase, Button, Typography, TextField } from "@material-ui/core";
+import { ButtonBase, Button, Typography, TextField, SvgIcon } from "@material-ui/core";
 import isEmpty from 'lodash/isEmpty';
 import { addProductMachine } from '../../machines/facturacion/addProductMachine';
 import AddIcon from "@material-ui/icons/Add";
-
+import { ReactComponent as MinusIcon } from "../../assets/icons/bx-minus.svg";
+import { ReactComponent as PlusIcon } from "../../assets/icons/bx-plus.svg";
 
 export const QuantityBtn = styled(ButtonBase)`
   background-color: #fff !important;
@@ -17,9 +18,9 @@ export const QuantityBtn = styled(ButtonBase)`
   justify-content: center;
   height: 28px;
   width: 28px;
-  border-radius: 14px !important;
+  border-radius: 5px !important;
   background: white;
-  
+  border: 2px solid ${(props) => props.theme.palette.primary.main};
   span{
     pointer-events:none;
   }
@@ -35,7 +36,6 @@ export const QuantityBtn = styled(ButtonBase)`
 `;
 export const QuantityInput = styled(TextField)`
   background-color: #fff !important;
-  text-align:center;
   height: 28px;
   width: 28px;
   border-radius: 14px !important;
@@ -43,198 +43,44 @@ export const QuantityInput = styled(TextField)`
   font-weight:bold;
   padding:0;
   margin:0;
+  flex:1;
+  input{
+    text-align:center;
+
+  }
 `;
+export const ContainerBtnProductInInvoice = styled.div`
+  display: flex;
 
-const Item = ({ currency, product, theme, sendNewInvoice, currentNewInvoice, isAlreadyInInvoice }) => {
-
-    //const [isInInvoice, setIsInInvoice] = useState(isAlreadyInInvoice)
-
-
-
-
-}
-
-const ProductsTables = ({ currency, products, theme, currentNewInvoice, sendNewInvoice }) => {
-
-    //const [current, send] = useMachine(addProductMachine);
-    //const { products: productsInInvoice } = currentNewInvoice.context;
-
-
-
-
-    /* const isAlreadyInInvoice = (productId) => {
-        console.log(currentNewInvoice.context.products);
-        return currentNewInvoice.context.products.find(product => product.id == productId);
-    } */
-
-    const isProductInCart = (productId) => {
-        return currentNewInvoice.context.products.find(
-            product => product.id == productId
-        );
-    }
-
-    /* const quantityIsAllowed = (inputObj) => {
-        const { value } = inputObj;
-        if (value > product.cantidad || value < 1) {
-            if (!value == "") {
-                return null;
-            }
-        }
-        return inputObj;
-    } */
-
-    const handleAddProduct = (product) => {
-        //console.log(isAlreadyInInvoice(product.id));
-        console.log(isProductInCart(product.id));
-        console.log(currentNewInvoice.context.products);
-
-
-        sendNewInvoice(
-            {
-                type: "ADDPRODUCT",
-                product: product,
-            }
-        )
-        //setIsInInvoice(true)
-        /* shoppingCartDispatch({
-            type: "CHANGEQUANTITY",
-            value: isProductInCart,
-            quantity: isProductInCart.quantity + 1,
-            fromInput: false,
-        });
-        debouncedVerify(isProductInCart); */
-    };
-
-    const handleAddQuantity = (product) => {
-        //e.stopPropagation();
-        sendNewInvoice(
-            {
-                type: "ADDPRODUCT",
-                product: product,
-                quantity: product.quiantity + 1
-            }
-        )
-    };
-
-    const handleDiscountQuantity = (product) => {
-        //e.stopPropagation();
-        sendNewInvoice(
-            {
-                type: "ADDPRODUCT",
-                product: product,
-                quantity: product.quiantity - 1
-            }
-        )
-    };
-
-    useEffect(() => {
-
-        console.log("cambiaron los productos - desde tabla");
-        //console.log(productsInInvoice);
-        console.log(currentNewInvoice.context.products);
-        //console.log(currentNewInvoice.context.products.find(product => product.id == 1));
-    }, [currentNewInvoice])
-
+`;
+const BtnProductInInvoice = ({ productInInvoice, theme, handleDiscountQuantity, handleAddQuantity, handleQuantityInput }) => {
     return (
-        <ProductsTable theme={theme}>
-            <DataGridHeader>
-                <tr>
-                    <th>Codigo</th>
-                    <th>Nombre</th>
-                    <th>Disponible</th>
-                    <th>Precio venta</th>
-                    <th>Acciones</th>
-                    {/* {isNewInvoice && (
-                        <>
-                            <th>Acciones</th>
-                        </>
+        <ContainerBtnProductInInvoice
+            className="shoppingCart-btns"
+            onClick={(e) => {
+                e.stopPropagation();
+            }}
+            aria-label="skip-drag"
+        >
+            <QuantityBtn
+                theme={theme}
+                onClick={handleDiscountQuantity}
+                aria-label="skip-drag"
+            >
+                <SvgIcon component={MinusIcon}></SvgIcon>
+            </QuantityBtn>
+            <QuantityInput
+                aria-label="skip-drag"
+                onClick={(e) => {
+                    e.stopPropagation();
+                }}
+                value={productInInvoice.cantidad}
+                onChange={(e) => {
+                    handleQuantityInput(e, productInInvoice)
+                }}
+            ></QuantityInput>
 
-                    )} */}
-                </tr>
-            </DataGridHeader>
-
-            <ProductsTableBody>
-                {products.map(product => (
-                    <>
-                        {/* <Item
-                        theme={theme}
-                        key={product.id}
-                        product={product}
-                        currency={currency}
-                        sendNewInvoice={sendNewInvoice}
-                        currentNewInvoice={currentNewInvoice}
-                    /> */}
-                        <tr>
-                            <td>
-                                <Typography variant="subtitle1">
-                                    {product.codigo}
-                                </Typography>
-                            </td>
-                            <td>
-                                <Typography variant="subtitle2">
-                                    {product.nombre}
-                                </Typography>
-                            </td>
-                            <td>
-                                <Typography variant="subtitle1">
-                                    {product.cantidad}
-                                </Typography>
-                            </td>
-                            <td>
-                                <Typography className="font-weight-bold" variant="subtitle1">
-                                    <NumberFormat
-                                        //customInput={TextField}
-                                        prefix={currency.prefix}
-                                        thousandSeparator="."
-                                        decimalSeparator=","
-                                        fixedDecimalScale={true}
-                                        decimalScale={2}
-                                        displayType='text'
-                                        value={parseFloat(product.precio_venta * currency.rate)}
-                                    />
-                                </Typography>
-                            </td>
-
-                            <td>
-                                {isProductInCart(product.id) ? (
-                                    <>
-                                        <div
-                                            className="shoppingCart-btns"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                            }}
-                                            aria-label="skip-drag"
-                                        >
-                                            <QuantityBtn
-                                                theme={theme}
-                                                onClick={handleDiscountQuantity}
-                                                aria-label="skip-drag"
-                                            >
-                                                -
-                                            {/* <SvgIcon component={MinusIcon}></SvgIcon> */}
-                                            </QuantityBtn>
-                                            <QuantityInput
-                                                aria-label="skip-drag"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                }}
-                                                value={isProductInCart.cantidad}
-                                                onChange={(e) => {
-                                                    let numbersOnly = new RegExp("^[0-9]+$");
-                                                    let isValid = numbersOnly.exec(e.target.value);
-                                                    if (isValid || e.target.value == "") {
-                                                        /* shoppingCartDispatch({
-                                                            type: "CHANGEQUANTITY",
-                                                            value: isProductInCart,
-                                                            quantity: e.target.value,
-                                                            fromInput: true,
-                                                        });
-                                                        debouncedVerify(isProductInCart); */
-                                                    }
-                                                }}
-                                            ></QuantityInput>
-
-                                            {/* <NumberFormat
+            {/* <NumberFormat
                                 customInput={TextField}
                                 name="quantity"
                                 label="Cantidad"
@@ -256,56 +102,172 @@ const ProductsTables = ({ currency, products, theme, currentNewInvoice, sendNewI
                                 helperText={`Disponible en inventario: ${current.context.formData.product.cantidad}`}
                             /> */}
 
-                                            <QuantityBtn
-                                                theme={theme}
-                                                onClick={handleAddQuantity}
-                                                aria-label="skip-drag"
-                                            >
-                                                +
-                                            {/* <SvgIcon component={PlusIcon}></SvgIcon> */}
-                                            </QuantityBtn>
-                                        </div>
-                                    </>
-                                ) : (
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() => {
-                                            handleAddProduct(product)
-                                        }}
-                                    //type="submit"
-                                    //disabled={checkEmptyFields()}
-                                    >
-                                        <AddIcon />
-                                        <Typography >
-                                            Agregar
-                                </Typography>
-                                    </Button>
-                                )
-                                }
+            <QuantityBtn
+                theme={theme}
+                onClick={handleAddQuantity}
+                aria-label="skip-drag"
+            >
+                <SvgIcon component={PlusIcon}></SvgIcon>
+            </QuantityBtn>
+        </ContainerBtnProductInInvoice>
+    )
+}
 
-                            </td>
-                        </tr>
-                    </>
+const Item = ({ currency, product, theme, sendNewInvoice, currentNewInvoice }) => {
+
+    const isProductInInvoice = currentNewInvoice.context.products.find(
+        productInInvoice => productInInvoice.id === product.id
+    );
+
+
+    const handleAddProduct = (product) => {
+        //e.stopPropagation();
+        sendNewInvoice(
+            {
+                type: "ADDPRODUCT",
+                product: product,
+                quantity: product.quantity + 1
+            }
+        )
+    };
+
+    const handleAddQuantity = (product) => {
+        //e.stopPropagation();
+        sendNewInvoice(
+            {
+                type: "CHANGEQUANTITY",
+                product: product,
+                quantity: product.quantity + 1
+            }
+        )
+    };
+
+    const handleDiscountQuantity = (product) => {
+        //e.stopPropagation();
+        sendNewInvoice(
+            {
+                type: "CHANGEQUANTITY",
+                product: product,
+                quantity: product.quantity - 1
+            }
+        )
+    };
+
+    const handleQuantityInput = (e, productInInvoice) => {
+        //e.stopPropagation();
+        let numbersOnly = new RegExp("^[0-9]+$");
+        let isValid = numbersOnly.exec(e.target.value);
+        if (isValid || e.target.value === "") {
+            sendNewInvoice({
+                type: "CHANGEQUANTITY",
+                value: productInInvoice,
+                quantity: e.target.value,
+                fromInput: true,
+            });
+        }
+    };
+
+    return (
+        <tr>
+            <td>
+                <Typography variant="subtitle1">
+                    {product.codigo}
+                </Typography>
+            </td>
+            <td>
+                <Typography variant="subtitle2">
+                    {product.nombre}
+                </Typography>
+            </td>
+            <td>
+                <Typography variant="subtitle1">
+                    {product.cantidad}
+                </Typography>
+            </td>
+            <td>
+                <Typography className="font-weight-bold" variant="subtitle1">
+                    <NumberFormat
+                        //customInput={TextField}
+                        prefix={currency.prefix}
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        fixedDecimalScale={true}
+                        decimalScale={2}
+                        displayType='text'
+                        value={parseFloat(product.precio_venta * currency.rate)}
+                    />
+                </Typography>
+            </td>
+
+            <td>
+                {isProductInInvoice ? (
+                    <BtnProductInInvoice
+                        productInInvoice={isProductInInvoice}
+                        theme={theme}
+                        handleDiscountQuantity={handleDiscountQuantity}
+                        handleAddQuantity={handleAddQuantity}
+                        handleQuantityInput={handleQuantityInput}
+                    />
+                ) : (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={
+                            () => {
+                                handleAddProduct(product)
+                            }
+                        }
+                    //type="submit"
+                    //disabled={checkEmptyFields()}
+                    >
+                        <AddIcon />
+                        <Typography >
+                            Agregar
+                        </Typography>
+                    </Button>
+                )
+                }
+            </td>
+        </tr >
+    )
+}
+
+const ProductsTables = ({ currency, products, theme, currentNewInvoice, sendNewInvoice }) => {
+    return (
+        <ProductsTable theme={theme}>
+            <DataGridHeader>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Disponible</th>
+                    <th>Precio venta</th>
+                    <th>Acciones</th>
+                </tr>
+            </DataGridHeader>
+
+            <ProductsTableBody>
+                {products.map((product, index) => (
+                    <Item
+                        key={index}
+                        theme={theme}
+                        product={product}
+                        currentNewInvoice={currentNewInvoice}
+                        sendNewInvoice={sendNewInvoice}
+                        currency={currency}
+                    />
                 ))}
             </ProductsTableBody>
         </ProductsTable >
-
     )
 }
 
 
-const AddProductModal = ({ currentNewInvoice, sendNewInvoice }) => {
+const AddProductModal = ({ currentNewInvoice, sendNewInvoice, theme }) => {
 
-    /* useEffect(() => {
-        
-        console.log(productsInInvoice);
-    }, [currentNewInvoice]) */
     return (
 
         <SearchProductModal
             currentNewInvoice={currentNewInvoice}
-            //productsInInvoice={productsInInvoice}
             sendNewInvoice={sendNewInvoice}
             ElHijo={ProductsTables}
         >

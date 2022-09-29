@@ -32,8 +32,8 @@ export default function SidebarAccordion ({ theme, page })  {
     const checkIsActive = (subRoutes) => {
 
         const isCurrentPath = subRoutes.find(subRoute => subRoute.path == path)
-        console.log(subRoutes);
-        console.log(isCurrentPath);
+        // console.log(subRoutes);
+        // console.log(isCurrentPath);
         if (isCurrentPath) {
             setIsActive(true)
             setIsExpanded(true)

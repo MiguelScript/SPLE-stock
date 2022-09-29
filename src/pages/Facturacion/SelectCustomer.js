@@ -1,13 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useMachine } from "@xstate/react";
 import Select from 'react-select';
-import { buscarProductosMachine } from "../../machines/facturacion/buscarProductosMachine";
-import { isEmpty } from "lodash";
-
-
 
 const SelectCustomer = ({ setCustomer, options }) => {
-    // const [current, send] = useMachine(buscarProductosMachine);
 
     const customStyles = {
 
@@ -26,7 +20,7 @@ const SelectCustomer = ({ setCustomer, options }) => {
     return (
         <Select
             styles={customStyles}
-            className="basic-single"
+            className="select-new-invoice-header"
             classNamePrefix="select"
             // isDisabled={isDisabled}
             // isLoading={true}
