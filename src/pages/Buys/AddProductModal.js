@@ -224,14 +224,14 @@ const Item = ({ currency, product, theme, sendNewInvoice, currentNewInvoice }) =
             <td>
                 <Typography className="font-weight-bold" variant="subtitle1">
                     <NumberFormat
-                        //customInput={TextField}
+                        customInput={TextField}
                         prefix={currency.prefix}
                         thousandSeparator="."
                         decimalSeparator=","
                         fixedDecimalScale={true}
                         decimalScale={2}
-                        displayType='text'
-                        value={parseFloat(product.precio_venta * currency.rate)}
+                        // displayType='text'
+                        value={parseFloat(product.precio_costo * currency.rate)}
                     />
                 </Typography>
             </td>
@@ -255,8 +255,8 @@ const ProductsTables = ({ currency, products, theme, currentNewInvoice, sendNewI
                 <tr>
                     <th>Codigo</th>
                     <th>Nombre</th>
-                    <th>Disponible</th>
-                    <th>Precio venta</th>
+                    <th>Existencia</th>
+                    <th>Precio costo</th>
                     <th>Acciones</th>
                 </tr>
             </DataGridHeader>

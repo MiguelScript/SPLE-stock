@@ -11,10 +11,11 @@ import {PAGO_MOVIL, CUSTOMERS} from "./config/constants";
 import Invoice from "./components/Invoice/Invoice";
 import ViewInvoice from "./pages/Facturacion/ViewInvoice";
 import NuevaFactura from "./pages/Facturacion/NuevaFactura";
+import NewBuy from "./pages/Buys/NewBuy";
+import ViewBuy from "./pages/Buys/ViewBuy";
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const Users = lazy(() => import("./pages/StaffMembers/StaffMembers"));
 const Config = lazy(() => import("./pages/Settings/Settings"));
-const Stock = lazy(() => import("./pages/Stock/Stock"));
 const Products = lazy(() => import("./pages/Stock/Products/Products"));
 const Facturacion = lazy(() => import("./pages/Facturacion/Facturacion"));
 const PaymentMethods = lazy(() =>
@@ -23,6 +24,7 @@ const PaymentMethods = lazy(() =>
 const BankAccounts = lazy(() => import("./pages/BankAccounts/BankAccounts"));
 const PagoMovilAccounts = lazy(() => import("./pages/PagoMovilAccounts/PagoMovilAccounts"));
 const Customers = lazy(() => import("./pages/Customers/Customers"));
+const Buys = lazy(() => import("./pages/Buys/Buys"));
 
 
 function PrivateRoute({ component: Component, hasDrawer = false, ...rest }) {
@@ -80,9 +82,10 @@ const Routes = () => {
         <PrivateRoute exact path="/facturacion" component={Facturacion} hasDrawer={true}/>
         <PrivateRoute exact path="/facturacion/nuevo" component={NuevaFactura} hasDrawer={true}/>
         <PrivateRoute exact path="/facturacion/:id" component={ViewInvoice} hasDrawer={true}/>
-        <PrivateRoute exact path="/inventario" component={Stock} hasDrawer={true} />
-        <PrivateRoute exact path="/inventario/productos" component={Products} hasDrawer={true} />
-        <PrivateRoute exact path="/inventario/sin-existencias" component={Products} hasDrawer={true} />
+        <PrivateRoute exact path="/inventario" component={Products} hasDrawer={true} />
+        <PrivateRoute exact path="/compras" component={Buys} hasDrawer={true} />
+        <PrivateRoute exact path="/compras/nuevo" component={NewBuy} hasDrawer={true}/>
+        <PrivateRoute exact path="/compras/:id" component={ViewBuy} hasDrawer={true}/>
         <PrivateRoute exact path="/settings" component={Config} hasDrawer={true} />
         <PrivateRoute
           exact

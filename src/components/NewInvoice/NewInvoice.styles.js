@@ -42,6 +42,9 @@ export const ProductsGrid = styled.div`
     h6.product-attribute {
       font-size: 1.1rem;
     }
+    &.numeric{
+      justify-content: end;
+    }
     p.product-attribute {
       display: flex;
       align-items: center;

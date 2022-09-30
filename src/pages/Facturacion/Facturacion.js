@@ -110,7 +110,7 @@ const Facturacion = () => {
           <Col xl={3}>
             {" "}
             <Typography variant="h6" className="font-weight-bold">
-              Facturas emitidas
+              Ventas realizadas
             </Typography>
           </Col>
           <Col xl={9}>
@@ -138,7 +138,7 @@ const Facturacion = () => {
                   color="primary"
                   onClick={handleCreate}
                 >
-                  Nueva factura
+                  Nueva venta
                 </Button>
               </Col>
             </ActionsContainer>

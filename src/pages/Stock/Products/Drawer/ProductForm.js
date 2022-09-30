@@ -24,6 +24,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
 import NumberFormat from 'react-number-format';
 import { CURRENCY_DEFAULT } from "../../../../config/constants";
+import { SwicthContainer } from "../../../../components/NewInvoice/NewInvoice.styles";
 
 
 
@@ -50,8 +51,8 @@ const ProductForm = ({ closeDrawer, product, goToDatagrid, isEdit = false, texts
 
   const [current, send] = useMachine(productFormMachine);
   const [currency, setcurrency] = React.useState(CURRENCY_DEFAULT);
-  const [toggled, setToggled] = React.useState(false);
-  const SiteDataState = React.useContext(StoreStateContext);
+  // const [toggled, setToggled] = React.useState(false);
+  // const SiteDataState = React.useContext(StoreStateContext);
 
 
   const simpleValidator = useRef(
@@ -90,7 +91,7 @@ const ProductForm = ({ closeDrawer, product, goToDatagrid, isEdit = false, texts
     "cantidad",
     current.context.formData.cantidad,
     "required",
-    { messages: { required: "la cantidad disponible es requerida" } }
+    { messages: { required: "la cantidad inicial es requerida" } }
 
   );
   /* let fileErrorMessage = simpleValidator.current.message(
@@ -100,10 +101,10 @@ const ProductForm = ({ closeDrawer, product, goToDatagrid, isEdit = false, texts
     { messages: { required: "El archivo xls es necesario" } }
   ); */
 
-  const calcularPrecioVenta = (porcentaje, precioCosto) => {
+  // const calcularPrecioVenta = (porcentaje, precioCosto) => {
 
-    return ((precioCosto * porcentaje) / 100) + parseFloat(precioCosto);
-  }
+  //   return ((precioCosto * porcentaje) / 100) + parseFloat(precioCosto);
+  // }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -118,37 +119,33 @@ const ProductForm = ({ closeDrawer, product, goToDatagrid, isEdit = false, texts
     }
   };
 
-  const handleChangeCheckbox = (e) => {
-    const { name, checked } = e.target;
-    send({ type: "SETCHECKBOXDATA", name, checked });
-    console.log(e.target.name + checked);
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     send({ type: "SETDATA", name, value });
   };
 
-  const handleToggle = (toggle) => {
-    console.log(toggle);
-    setToggled(toggle)
+  const handleToggle = (e) => {
+    const { name, checked } = e.target;
+    const active = checked === true ? 1 : 0;
+
+    send({ type: "SETDATA", name, value: active });
   }
 
-  useEffect(() => {
-    //console.log(children);
-    if (toggled == true) {
-      setcurrency(
-        {
-          prefix: "Bs.S",
-          rate: SiteDataState.dollarRate.context.dollarRate.tasa,
-        }
-      )
-    } else {
-      setcurrency(
-        CURRENCY_DEFAULT
-      )
-    }
-  }, [toggled]);
+  // useEffect(() => {
+  //   //console.log(children);
+  //   if (toggled === true) {
+  //     setcurrency(
+  //       {
+  //         prefix: "Bs.S",
+  //         rate: SiteDataState.dollarRate.context.dollarRate.tasa,
+  //       }
+  //     )
+  //   } else {
+  //     setcurrency(
+  //       CURRENCY_DEFAULT
+  //     )
+  //   }
+  // }, [toggled]);
 
   useEffect(() => {
     if (isEdit) {
@@ -240,21 +237,19 @@ const ProductForm = ({ closeDrawer, product, goToDatagrid, isEdit = false, texts
             <Col md={12}>
               <Form.Group controlId="exampleForm.ControlInput1">
                 <TextField
-                  label="Cantidad disponible"
+                  label={isEdit ? 'Existencia' : 'Existencia inicial'}
                   variant="outlined"
                   name="cantidad"
                   onChange={handleChange}
                   defaultValue={isEdit ? product.cantidad : ""}
                   //required={}
                   fullWidth
+                  disabled={isEdit ? true : false}
                 />
               </Form.Group>
             </Col>
             <Col md={12}>
               <Form.Group controlId="exampleForm.ControlInput1">
-
-
-
                 <NumberFormat
                   label="Precio de venta"
                   variant="outlined"
@@ -312,21 +307,29 @@ const ProductForm = ({ closeDrawer, product, goToDatagrid, isEdit = false, texts
                 </Typography> 
               </Form.Group>
             </Col> */}
-            <Col xl={12} className="mt-4">
-              <Typography>Opciones</Typography>
-            </Col>
-            <Col xl={12} className="d-flex">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={current.context.formData.isInHomepage == 1 ? true : false}
-                    defaultValue={current.context.formData.isInHomepage}
-                    onChange={handleChangeCheckbox}
-                    name="isInHomepage"
-                  />}
-                label="Mostrar en pagina inicial"
-              />
-            </Col>
+            {isEdit && (
+              <>
+                <Col xl={12} className="mt-4">
+                  <Typography variant='h6'>Opciones</Typography>
+                </Col>
+                <Col xl={12} className="d-flex">
+
+                  <SwicthContainer>
+                    <Switch
+                      name="status"
+                      color="primary"
+                      checked={current.context.formData.status === 1 ? true : false}
+                      onChange={handleToggle}
+                    />
+                    <Typography
+                      variant="subtitle2"
+                    >
+                      Activo
+                    </Typography>
+                  </SwicthContainer>
+                </Col>
+              </>
+            )}
             <Col xl={12} className="d-flex justify-content-center">
               <Collapse in={
                 current.matches("error")
@@ -368,9 +371,6 @@ const ProductForm = ({ closeDrawer, product, goToDatagrid, isEdit = false, texts
               </Collapse>
             </Col>
           </Paper>
-
-
-
           <ActionBtnsContainer>
             <Button
               variant="contained"

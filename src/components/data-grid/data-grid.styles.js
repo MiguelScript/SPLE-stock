@@ -130,8 +130,10 @@ export const DataGrid = styled.div`
       }
     }
     }
-    
 
+    &.numeric{
+      justify-content: end;
+    }
     &.header-column {
     
       cursor: default;

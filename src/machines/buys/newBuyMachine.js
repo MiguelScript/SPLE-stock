@@ -1,30 +1,15 @@
 import { Machine, assign } from "xstate";
 import api from "../../config/api";
 
-export const nuevaFacturaMachine = Machine(
+export const newBuyMachine = Machine(
     {
-        id: "nuevaFacturaMachine",
-        initial: "fetchData",
+        id: "newBuyMachine",
+        initial: "editInvoice",
         context: {
-            customerId: null,
-            sellerId: null,
-            paymentMethodId: null,
             responseMsg: "",
-            products: [
+            productsInBuy: [
             ],
             subtotal: 0,
-            customers: [],
-            sellers: [],
-            paymentMethods: [
-                {
-                    id: 1,
-                    name: 'Dolares efectivo',
-                },
-                {
-                    id: 2,
-                    name: 'Pago movil',
-                }
-            ]
         },
         states: {
             fetchData: {
@@ -35,7 +20,7 @@ export const nuevaFacturaMachine = Machine(
                             if (token) {
                                 try {
                                     const { data: dt, /* status */ } = await api.get(
-                                        "api/ventas/nueva", {
+                                        "api/compras/nueva", {
                                         headers: { Authorization: `Bearer ${token}` },
                                     });
                                     resolve(dt.data);
@@ -87,12 +72,9 @@ export const nuevaFacturaMachine = Machine(
                                 try {
                                     let formData = new FormData();
 
-                                    formData.append("products", JSON.stringify(_ctx.products));
+                                    formData.append("products", JSON.stringify(_ctx.productsInBuy));
                                     formData.append("subtotal", _ctx.subtotal);
                                     formData.append("tasa_dolar_id", 1);
-                                    formData.append("customerId", _ctx.customerId);
-                                    formData.append("sellerId", _ctx.sellerId);
-                                    formData.append("paymentMethodId", _ctx.paymentMethodId);
 
                                     const { data: venta_id, /* status */ } = await api.post(
                                         "api/ventas",

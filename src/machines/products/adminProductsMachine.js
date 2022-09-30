@@ -10,6 +10,7 @@ export const adminProductsMachine = Machine(
       responseMsg: "",
       searchByActive: true,
       search: "",
+      filters: null,
       productos: [],
       totalProductos: 0,
       toEdit: false,
@@ -33,23 +34,16 @@ export const adminProductsMachine = Machine(
               const token = localStorage.token;
               if (token) {
                 try {
-                  let formData = new FormData();
-                  formData.append("search", _ctx.search);
-                  formData.append("limit", _ctx.pageInfo.limit);
-                  formData.append("offset", _ctx.pageInfo.offset);
-                  formData.append("status", "1");
-                  let route = `?page=${_ctx.pageInfo.offset}&results=${_ctx.pageInfo.limit}`
+
+                  let route = `?search=${_ctx.search}&page=${_ctx.pageInfo.offset}&results=${_ctx.pageInfo.limit}&filters=${_ctx.filters}`
                   const { data: productos, status } = await api.get(
                     "api/productos" + route,
-                    formData, {
-                    headers: { Authorization: `Bearer ${token}` },
-                  }
-
+                    {
+                      headers: { Authorization: `Bearer ${token}` },
+                    }
                   );
-                  /* setTimeout(() => {
-                    
-                  }, 600000); */
-                  resolve(productos);
+
+                  resolve(productos.data);
 
                 } catch (e) {
                   reject({
@@ -119,7 +113,7 @@ export const adminProductsMachine = Machine(
                   }
                 );
                 const body = await response.json();
-                if (response.status == 200) {
+                if (response.status === 200) {
                   resolve(body);
                 } else {
                   reject(body);
@@ -171,8 +165,8 @@ export const adminProductsMachine = Machine(
   {
     actions: {
       setProductos: assign({
-        productos: (_ctx, evt) => evt.data.data.productos,
-        totalProductos: (_ctx, evt) => evt.data.data.total_productos,
+        productos: (_ctx, evt) => evt.data.data,
+        totalProductos: (_ctx, evt) => evt.data.total,
       }),
       setLimit: assign({
         pageInfo: (_ctx, evt) => {

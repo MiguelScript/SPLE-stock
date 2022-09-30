@@ -52,11 +52,10 @@ const InputSearchProducts = ({ sendParent }) => {
 
     const handleChange = (e) => {
         const { value } = e.target
-        console.log(value);
         debouncedVerify(value)
     }
 
-    const select = e => {
+    /* const select = e => {
         let name = "product";
         console.log(e);
         let value = e ? (JSON.parse(e.value)) : [];
@@ -83,7 +82,7 @@ const InputSearchProducts = ({ sendParent }) => {
 
         //setSelet();
     }
-
+ */
     return (
         <TextField
             label="Escribe aqui para buscar"

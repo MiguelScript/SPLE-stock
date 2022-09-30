@@ -11,6 +11,7 @@ export const CATEGORY = "/category";
 export const LOGIN = "/login";
 export const LOGOUT = "/logout";
 export const FACTURACION = "/facturacion";
+export const COMPRAS = "/compras";
 export const CUSTOMERS = "/customers";
 export const SETTINGS = "/settings";
 export const STAFF_MEMBERS = "/admin-usuarios";
@@ -36,17 +37,23 @@ export const ESTADOS_CLIENTES = [
   { estado: "Activo", class: "activo" },
   { estado: "Bloqueado", class: "bloqueado" },
 ];
+
+export const PRODUCT_STATUS = [
+  { estado: "Activo", class: "activo" },
+  { estado: "Bloqueado", class: "bloqueado" },
+];
+
 export const ROLES_USUARIOS = [
   { rol: "super-admin", id: 1 },
   { rol: "administrador", id: 2 },
   { rol: "usuario", id: 3 }
 ];
 
-export const CalcularPrecioVenta = (precio_costo, porcentaje_ganancia) => {
-  let ganancia = (precio_costo * porcentaje_ganancia) / 100;
-  console.log(ganancia);
-  return ganancia + precio_costo;
-}
+// export const CalcularPrecioVenta = (precio_costo, porcentaje_ganancia) => {
+//   let ganancia = (precio_costo * porcentaje_ganancia) / 100;
+//   console.log(ganancia);
+//   return ganancia + precio_costo;
+// }
 
 
 export const ESTADOS_FACTURA = [

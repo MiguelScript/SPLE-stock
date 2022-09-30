@@ -10,7 +10,8 @@ import {
     ClickAwayListener,
     ButtonBase,
     Tooltip, */
-    Switch
+    Switch,
+    TextField
 } from "@material-ui/core";
 import { Row, Col, FormControl } from "react-bootstrap";
 import AgregarProducto from './AgregarProducto';
@@ -30,14 +31,11 @@ import { CustomModal } from "../../components/Common/reusable-modal";
 import AddProductModal from './AddProductModal'
 import Invoice from "../../components/Invoice/Invoice";
 import { useHistory } from 'react-router-dom';
-import SelectCustomer from './SelectCustomer';
-import SelectSeller from './SelectSeller';
-import SelectPaymentMethod from './SelectPaymentMethod';
 import CompletedFormLayout from '../../components/Common/CompletedFormLayout';
 
 
 
-const NuevaFactura = () => {
+const NewBuy = () => {
 
     const theme = useTheme();
     let history = useHistory();
@@ -110,7 +108,7 @@ const NuevaFactura = () => {
         !current.matches('completed') ? (
             <>
                 <div className="d-flex justify-content-between mb-3">
-                    <Typography variant="h6">Nueva Factura</Typography>
+                    <Typography variant="h6">Nueva Compra</Typography>
                     <Button
                         color="primary"
                         variant="contained"
@@ -123,63 +121,58 @@ const NuevaFactura = () => {
                 </div>
 
                 <NewInvoiceHeader elevation={0}>
-                    <Row>
-                        <Col xl={4}>
-                            <div>
-                                <Typography
-                                    variant='h6'
-                                >
-                                    Cliente
-                                </Typography>
-                                <SelectCustomer
-                                    options={current.context.customers}
-                                    setCustomer={(customerId) => send({
-                                        type: "SETCUSTOMER",
-                                        customerId: customerId,
-                                    })}
-                                />
-                            </div>
-                        </Col>
-                        <Col xl={4}>
-                            <div>
-                                <Typography
-                                    variant='h6'
-                                    className='mr-1'
-                                >
-                                    Vendedor
-                                </Typography>
-                                <SelectSeller
-                                    options={current.context.sellers}
-                                    setSeller={(sellerId) => send({
-                                        type: "SETSELLER",
-                                        sellerId: sellerId,
-                                    })}
-                                />
-                            </div>
-
-                        </Col>
-                        <Col xl={4}>
-                            <div>
-                                <Typography
-                                    variant='h6'
-                                >
-                                    M.Pago:
-                                </Typography>
-                                <SelectPaymentMethod
-                                    options={current.context.paymentMethods}
-                                    setPaymentMethod={(paymentMethodId) => send({
-                                        type: "SETPAYMENTMETHOD",
-                                        paymentMethodId: paymentMethodId,
-                                    })}
-                                />
-                            </div>
-                        </Col>
-                    </Row>
-                    <Row>
-
-                    </Row>
-                    <Row className='mt-4'>
+                    <Row >
                         <Col md={10}>
+                            <Typography variant='subtitle2'>Agregar producto</Typography>
+
+                            {/* <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => {
+                                    modalDispatch(
+                                        {
+                                            type: "OPENMODAL",
+                                            component: AddProductModal,
+                                            modalProps: {
+                                                sendNewInvoice: (data) => { send(data) },
+                                                currentNewInvoice: current,
+                                                theme: theme,
+                                            },
+                                            CustomModal,
+                                        }
+                                    )
+                                }}
+                            >
+                                <Typography>Agregar producto</Typography>
+                            </Button> */}
+                        </Col>
+                        <Col md={2}>
+
+                        </Col>
+                    </Row>
+                    <Row className='mt-3'>
+                        <Col xl={4}>
+                            <TextField
+                                variant='outlined'
+                                label="Buscar producto"
+                                name="search-product"
+                                onKeyPress={e => {
+                                    if (e.key === 'Enter') {
+                                        modalDispatch(
+                                            {
+                                                type: "OPENMODAL",
+                                                component: AddProductModal,
+                                                modalProps: {
+                                                    sendNewInvoice: (data) => { send(data) },
+                                                    currentNewInvoice: current,
+                                                    theme: theme,
+                                                },
+                                                CustomModal,
+                                            }
+                                        )
+                                    }
+                                }}
+                            />
                             <Button
                                 variant="contained"
                                 color="secondary"
@@ -198,23 +191,21 @@ const NuevaFactura = () => {
                                     )
                                 }}
                             >
-                                {/* <SvgIcon component={SearchIcon} className="mr-3"></SvgIcon> */}
-                                <Typography>Buscar Productos</Typography>
                             </Button>
                         </Col>
-                        <Col md={2}>
-                            <SwicthContainer>
-                                <Typography
-                                    variant="subtitle2"
-                                >
-                                    Mostrar montos en Bs.S:<Switch
-                                        color="primary"
-                                        checked={toggled}
-                                        onChange={e => handleToggle(e.target.checked)}
-                                    />
-                                </Typography>
-
-                            </SwicthContainer>
+                        <Col xl={3}>
+                            <TextField
+                                variant='outlined'
+                                label="Cantidad"
+                                name="quantity-product"
+                            />
+                        </Col>
+                        <Col xl={3}>
+                            <TextField
+                                variant='outlined'
+                                label="Precio"
+                                name="price-product"
+                            />
                         </Col>
                     </Row>
                 </NewInvoiceHeader>
@@ -256,4 +247,4 @@ const NuevaFactura = () => {
     );
 }
 
-export default NuevaFactura;
+export default NewBuy;

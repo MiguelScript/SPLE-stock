@@ -7,7 +7,8 @@ import {
   STOCK,
   CUSTOMERS,
   PRODUCTS,
-  PRODUCTS_OUT_OF_STOCK
+  PRODUCTS_OUT_OF_STOCK,
+  COMPRAS
 } from "../../../config/constants";
 import {
   useRouteMatch
@@ -45,8 +46,14 @@ export const pageRoutes = [
     icon: DashboardIcon,
   },
   {
-    name: "Facturación",
+    name: "Ventas",
     path: FACTURACION,
+    exact: true,
+    icon: PackageIcon,
+  },
+  {
+    name: "Compras",
+    path: COMPRAS,
     exact: true,
     icon: PackageIcon,
   },
@@ -61,20 +68,6 @@ export const pageRoutes = [
     path: STOCK,
     exact: true,
     icon: ProductsIcon,
-    childs: [
-      {
-        name: "Productos",
-        path: PRODUCTS,
-        exact: true,
-        icon: ProductsIcon,
-      },
-      {
-        name: "Productos sin existencias",
-        path: PRODUCTS_OUT_OF_STOCK,
-        exact: true,
-        icon: ClientIcon,
-      }
-    ]
   },
   {
     name: "Ajustes",

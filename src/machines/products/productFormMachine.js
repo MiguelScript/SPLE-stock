@@ -14,7 +14,7 @@ export const productFormMachine = Machine(
         cantidad: "",
         precio_costo: "",
         precio_venta: "",
-        isInHomepage: "",
+        status: "",
         image: "",
       },
       responseMsg: "",
@@ -48,7 +48,7 @@ export const productFormMachine = Machine(
                     precio_costo,
                     porcentaje_ganancia,
                     precio_venta,
-                    isInHomepage,
+                    status,
                     image
                   } = _ctx.formData;
 
@@ -61,10 +61,11 @@ export const productFormMachine = Machine(
                   formData.append("porcentaje_ganancia", porcentaje_ganancia);
                   formData.append("precio_venta", precio_venta);
                   formData.append("cantidad_minima", 1);
+                  formData.append("status", status);
 
                   let response = "";
 
-                  if (evt.format == "edit") {
+                  if (evt.format === "edit") {
                     formData.append("_method", "PUT")
                     response = await api.post(
                       route + "/" + id,
@@ -85,7 +86,7 @@ export const productFormMachine = Machine(
 
                   const body = await response;
                   console.log(response);
-                  if (response.status === 200) {
+                  if (response.status === 200 || response.status === 201) {
                     resolve(body);
                   } else {
                     reject(body.msg);
@@ -93,7 +94,7 @@ export const productFormMachine = Machine(
                 } catch (e) {
                   //error.response.data
                   //console.log(e.response.data);
-                  if (e.response.data.code == 422) {
+                  if (e.response.data.code === 422) {
                     reject(e.response.data.error);
                   }
 
@@ -128,7 +129,6 @@ export const productFormMachine = Machine(
       }),
       setProduct: assign({
         formData: (_ctx, evt) => {
-          console.log(evt);
           return {
             id: evt.id,
             codigo: evt.codigo,

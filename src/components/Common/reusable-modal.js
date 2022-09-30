@@ -56,11 +56,8 @@ function ReusableModal() {
 
 
   useEffect(() => {
-    console.log(reusableModalState);
-
     if (reusableModalState.matches("openedModal")) {
-      console.log("modal abierto");
-      console.log(reusableModalState?.currentNewInvoice?.context?.products);
+      // console.log("modal abierto");
 
     } else {
     }

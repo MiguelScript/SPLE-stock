@@ -1,17 +1,17 @@
 import { Machine, assign } from "xstate";
 import api from "../../config/api";
 
-export const adminFacturacionMachine = Machine(
+export const adminBuysMachine = Machine(
   {
-    id: "adminFacturacionMachine",
+    id: "adminBuysMachine",
     initial: "idle",
     context: {
       selectedInvoice: "",
       responseMsg: "",
       searchByActive: true,
       search: "",
-      invoices: [],
-      totalInvoices: 0,
+      buys: [],
+      totalBuys: 0,
       toEdit: false,
       toCreate: false,
       showInvoice: false,
@@ -40,13 +40,12 @@ export const adminFacturacionMachine = Machine(
                   formData.append("offset", _ctx.pageInfo.offset);
                   formData.append("status", "");
                   const { data: results } = await api.get(
-                    "api/ventas",
+                    "api/compras",
                     {
                       headers: { Authorization: `Bearer ${token}` },
                     }
                   );
-                  console.log(results);
-                  resolve(results);
+                  resolve(results.data);
                 } catch (e) {
                   reject({
                     msg:
@@ -93,15 +92,14 @@ export const adminFacturacionMachine = Machine(
   {
     actions: {
       setProductos: assign({
-        invoices: (_ctx, evt) => evt.data.data,
-        totalInvoices: (_ctx, evt) => evt.data.data.total,
+        buys: (_ctx, evt) => evt.data.data,
+        totalBuys: (_ctx, evt) => evt.data.data.total,
       }),
       setLimit: assign({
         pageInfo: (_ctx, evt) => {
           return { ..._ctx.pageInfo, limit: parseInt(evt.value) };
         },
       }),
-
       goToShowInvoice: assign({
         selectedInvoice: (_ctx, evt) => evt.data,
         showInvoice: true,

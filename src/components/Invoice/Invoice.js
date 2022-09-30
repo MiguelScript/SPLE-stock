@@ -16,8 +16,9 @@ import { isEmpty } from "lodash";
 import { ReactComponent as TrashIcon } from "../../assets/icons/bx-trash.svg";
 import NumberFormat from 'react-number-format';
 import DeleteContained from '../../components/Buttons/DeleteContained';
+import { HandleQuantityBtns } from '../../pages/Facturacion/AddProductModal';
 
-const Invoice = ({ products, isView = false, currency, removeProduct }) => {
+const Invoice = ({ products, isView = false, currency, removeProduct, currentInvoice, sendInvoice }) => {
     const theme = useTheme();
     const dataGridContent = useRef();
 
@@ -35,16 +36,16 @@ const Invoice = ({ products, isView = false, currency, removeProduct }) => {
                         <div className="header-column">
                             <Typography>Nombre</Typography>
                         </div>
-                        <div className="header-column">
+                        <div className="header-column numeric">
                             <Typography>cantidad</Typography>
                         </div>
-                        <div className="header-column">
+                        <div className="header-column numeric">
                             <Typography>Precio U.</Typography>
                         </div>
-                        <div className="header-column">
+                        <div className="header-column numeric">
                             <Typography>Precio T.</Typography>
                         </div>
-                        {isView == false && (
+                        {isView === false && (
                             <div className="header-column">
                                 <Typography>Acciones</Typography>
                             </div>
@@ -58,12 +59,18 @@ const Invoice = ({ products, isView = false, currency, removeProduct }) => {
                                                 {producto.nombre}
                                             </Typography>
                                         </div>
-                                        <div>
-                                            <Typography className="product-attribute" variant="h6">
-                                                {producto.cantidad}
-                                            </Typography>
+                                        <div className='numeric'>
+                                            {/* <Typography className="product-attribute" variant="h6">
+                                                {producto.quantityInInvoice}
+                                            </Typography> */}
+                                            <HandleQuantityBtns
+                                                theme={theme}
+                                                currentNewInvoice={currentInvoice}
+                                                sendNewInvoice={sendInvoice}
+                                                product={producto}
+                                            />
                                         </div>
-                                        <div>
+                                        <div className='numeric'>
                                             <Typography className="product-attribute font-weight-bold" variant="h6">
                                                 <NumberFormat
                                                     //customInput={TextField}
@@ -77,7 +84,7 @@ const Invoice = ({ products, isView = false, currency, removeProduct }) => {
                                                 />
                                             </Typography>
                                         </div>
-                                        <div>
+                                        <div className='numeric'>
                                             <Typography className="product-attribute font-weight-bold" variant="h6">
                                                 <NumberFormat
                                                     //customInput={TextField}
@@ -87,12 +94,12 @@ const Invoice = ({ products, isView = false, currency, removeProduct }) => {
                                                     fixedDecimalScale={true}
                                                     decimalScale={2}
                                                     displayType='text'
-                                                    value={parseFloat(producto.cantidad * producto.precio_costo * currency.rate)}
+                                                    value={parseFloat(producto.quantityInInvoice * producto.precio_costo * currency.rate)}
                                                 />
                                             </Typography>
                                         </div>
                                         {
-                                            isView == false && (
+                                            isView === false && (
                                                 <div>
                                                     <Tooltip title="Eliminar">
                                                         <DeleteContained
