@@ -7,6 +7,7 @@ export const newBuyMachine = Machine(
         initial: "editInvoice",
         context: {
             responseMsg: "",
+            search: "",
             productsInBuy: [
             ],
             subtotal: 0,

@@ -11,7 +11,8 @@ import {
     ButtonBase,
     Tooltip, */
     Switch,
-    TextField
+    TextField,
+    SvgIcon
 } from "@material-ui/core";
 import { Row, Col, FormControl } from "react-bootstrap";
 import AgregarProducto from './AgregarProducto';
@@ -27,11 +28,10 @@ import {
 
 import { CURRENCY_DEFAULT } from "../../config/constants";
 import { ReusableModalStateContext, ReusableModalDispatchContext } from "../../context/ReusableModal/reusable-modal";
-import { CustomModal } from "../../components/Common/reusable-modal";
-import AddProductModal from './AddProductModal'
 import Invoice from "../../components/Invoice/Invoice";
 import { useHistory } from 'react-router-dom';
 import CompletedFormLayout from '../../components/Common/CompletedFormLayout';
+import AddProdutToBuy from './AddProdutToBuy';
 
 
 
@@ -151,62 +151,12 @@ const NewBuy = () => {
                         </Col>
                     </Row>
                     <Row className='mt-3'>
-                        <Col xl={4}>
-                            <TextField
-                                variant='outlined'
-                                label="Buscar producto"
-                                name="search-product"
-                                onKeyPress={e => {
-                                    if (e.key === 'Enter') {
-                                        modalDispatch(
-                                            {
-                                                type: "OPENMODAL",
-                                                component: AddProductModal,
-                                                modalProps: {
-                                                    sendNewInvoice: (data) => { send(data) },
-                                                    currentNewInvoice: current,
-                                                    theme: theme,
-                                                },
-                                                CustomModal,
-                                            }
-                                        )
-                                    }
-                                }}
-                            />
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => {
-                                    modalDispatch(
-                                        {
-                                            type: "OPENMODAL",
-                                            component: AddProductModal,
-                                            modalProps: {
-                                                sendNewInvoice: (data) => { send(data) },
-                                                currentNewInvoice: current,
-                                                theme: theme,
-                                            },
-                                            CustomModal,
-                                        }
-                                    )
-                                }}
-                            >
-                            </Button>
-                        </Col>
-                        <Col xl={3}>
-                            <TextField
-                                variant='outlined'
-                                label="Cantidad"
-                                name="quantity-product"
-                            />
-                        </Col>
-                        <Col xl={3}>
-                            <TextField
-                                variant='outlined'
-                                label="Precio"
-                                name="price-product"
-                            />
-                        </Col>
+                        <AddProdutToBuy
+                            currentBuy={current}
+                            sendNewBuy={send}
+                            theme={theme}
+                            currency={currency}
+                        />
                     </Row>
                 </NewInvoiceHeader>
                 <Invoice

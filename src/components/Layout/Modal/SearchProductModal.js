@@ -124,6 +124,7 @@ function SearchProductModal({
                     <Col xl={6} className="mt-3 px-0">
                         <InputSearchProducts
                             sendParent={send}
+                            preSearch={props.preSearch}
                         />
                     </Col>
                     <Col md={6}>

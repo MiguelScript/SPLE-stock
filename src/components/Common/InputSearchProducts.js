@@ -7,7 +7,7 @@ import { isEmpty } from "lodash";
 import debounce from "lodash/debounce";
 
 
-const InputSearchProducts = ({ sendParent }) => {
+const InputSearchProducts = ({ sendParent, preSearch }) => {
 
     const [current, send] = useMachine(buscarProductosMachine);
 
@@ -27,6 +27,19 @@ const InputSearchProducts = ({ sendParent }) => {
         }, 500),
         []
     );
+
+    const handleChange = (e) => {
+        const { value } = e.target
+        if (value !== '') {
+            debouncedVerify(value)
+        }
+    }
+
+    useEffect(() => {
+        if (preSearch !== '') {            
+            debouncedVerify(preSearch)
+        }
+    }, [])
 
     useEffect(() => {
         if (current.matches("dataReady")) {
@@ -50,10 +63,7 @@ const InputSearchProducts = ({ sendParent }) => {
         }
     }, [value]) */
 
-    const handleChange = (e) => {
-        const { value } = e.target
-        debouncedVerify(value)
-    }
+
 
     /* const select = e => {
         let name = "product";
@@ -89,8 +99,9 @@ const InputSearchProducts = ({ sendParent }) => {
             variant="outlined"
             size="small"
             name="product"
+            defaultValue={preSearch !== '' || preSearch !== undefined ? preSearch : ''}
             onChange={handleChange}
-            //placeholder="Escribe aqui para buscar un producto"
+        //placeholder="Escribe aqui para buscar un producto"
         />
     );
 }

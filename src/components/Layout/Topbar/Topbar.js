@@ -267,6 +267,7 @@ export default function PrimarySearchAppBar() {
             <Button
               variant="contained"
               color="secondary"
+              className="mr-4"
               onClick={() => {
                 modalDispatch(
                   {

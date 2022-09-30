@@ -48,9 +48,9 @@ const theme = createMuiTheme({
       containedPrimary: {
         color: "white",
       },
-      /* containedSecondary: {
-        color: "grey",
-      }, */
+      containedSecondary: {
+        color: "#ffffff",
+      },
     },
   },
 });

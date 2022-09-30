@@ -6,10 +6,7 @@ import NumberFormat from 'react-number-format';
 import { ProductsGrid, DataGridContainer, ProductsTable, DataGridHeader, ProductsTableBody } from "../../components/Layout/Modal/SearchProductModel.styles";
 import { ButtonBase, Button, Typography, TextField, SvgIcon } from "@material-ui/core";
 import isEmpty from 'lodash/isEmpty';
-import { addProductMachine } from '../../machines/facturacion/addProductMachine';
 import AddIcon from "@material-ui/icons/Add";
-import { ReactComponent as MinusIcon } from "../../assets/icons/bx-minus.svg";
-import { ReactComponent as PlusIcon } from "../../assets/icons/bx-plus.svg";
 
 export const QuantityBtn = styled(ButtonBase)`
   background-color: #fff !important;
@@ -55,154 +52,101 @@ export const ContainerBtnProductInInvoice = styled.div`
 
 export const HandleQuantityBtns = ({
     product, theme, currentNewInvoice,
-    sendNewInvoice }) => {
-
-    const isProductInInvoice = currentNewInvoice.context.products.find(
-        productInInvoice => productInInvoice.id === product.id
-    );
+    sendNewInvoice, sendAddProduct }) => {
 
     const handleAddProduct = (product) => {
         //e.stopPropagation();
-        sendNewInvoice(
+        sendAddProduct(
             {
-                type: "ADDPRODUCT",
+                type: "SETSELECTEDPRODUCT",
                 product: product,
-                quantity: product.quantity + 1
             }
         )
-    };
-
-    const handleAddQuantity = (e) => {
-        sendNewInvoice(
-            {
-                type: "CHANGEQUANTITY",
-                product: isProductInInvoice,
-                quantity: isProductInInvoice.quantityInInvoice + 1,
-                fromInput: false
-            }
-        )
-    };
-
-    const handleDiscountQuantity = (e) => {
-        //e.stopPropagation();
-        sendNewInvoice(
-            {
-                type: "CHANGEQUANTITY",
-                product: isProductInInvoice,
-                quantity: isProductInInvoice.quantityInInvoice - 1,
-                fromInput: false
-            }
-        )
-    };
-
-    const handleQuantityInput = (e) => {
-        //e.stopPropagation();
-        let numbersOnly = new RegExp("^[0-9]+$");
-        let isValid = numbersOnly.exec(e.target.value);
-        if (isValid || e.target.value === "") {
-            sendNewInvoice({
-                type: "CHANGEQUANTITY",
-                product: isProductInInvoice,
-                quantity: e.target.value,
-                fromInput: true,
-            });
-        }
     };
 
     return (
-        isProductInInvoice ? (
-            <BtnProductInInvoice
-                productInInvoice={isProductInInvoice}
-                theme={theme}
-                handleAddQuantity={handleAddQuantity}
-                handleDiscountQuantity={handleDiscountQuantity}
-                handleQuantityInput={handleQuantityInput}
-                isProductInInvoice={isProductInInvoice}
-            />
-        ) : (
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={
-                    () => {
-                        handleAddProduct(product)
-                    }
+        <Button
+            variant="contained"
+            color="primary"
+            onClick={
+                () => {
+                    handleAddProduct(product)
                 }
-            //type="submit"
-            //disabled={checkEmptyFields()}
-            >
-                <AddIcon />
-                <Typography >
-                    Agregar
-                </Typography>
-            </Button>
-        )
-    )
-}
-
-export const BtnProductInInvoice = ({
-    productInInvoice, theme, handleAddQuantity, handleDiscountQuantity, handleQuantityInput }) => {
-
-    return (
-        <ContainerBtnProductInInvoice
-            className="shoppingCart-btns"
-            onClick={(e) => {
-                e.stopPropagation();
-            }}
-            aria-label="skip-drag"
+            }
+        //type="submit"
+        //disabled={checkEmptyFields()}
         >
-            <QuantityBtn
-                theme={theme}
-                onClick={handleDiscountQuantity}
-                aria-label="skip-drag"
-            >
-                <SvgIcon component={MinusIcon}></SvgIcon>
-            </QuantityBtn>
-            <QuantityInput
-                aria-label="skip-drag"
-                onClick={(e) => {
-                    e.stopPropagation();
-                }}
-                value={productInInvoice.quantityInInvoice}
-                onChange={(e) => {
-                    handleQuantityInput(e, productInInvoice)
-                }}
-            ></QuantityInput>
-
-            {/* <NumberFormat
-                                customInput={TextField}
-                                name="quantity"
-                                label="Cantidad"
-                                variant="outlined"
-                                size="small"
-                                allowNegative={false}
-                                isAllowed={quantityIsAllowed}
-                                onValueChange={(e) => {
-                                    const name = "quantity";
-                                    const value = e.value;
-                                    //console.log(e);
-                                    send({
-                                        type: "SETDATA",
-                                        name,
-                                        value
-                                    });
-                                }}
-                                value={current.context.formData.quantity}
-                                helperText={`Disponible en inventario: ${current.context.formData.product.cantidad}`}
-                            /> */}
-
-            <QuantityBtn
-                theme={theme}
-                onClick={handleAddQuantity}
-                aria-label="skip-drag"
-            >
-                <SvgIcon component={PlusIcon}></SvgIcon>
-            </QuantityBtn>
-        </ContainerBtnProductInInvoice>
+            <AddIcon />
+            <Typography >
+                Seleccionar
+            </Typography>
+        </Button>
     )
 }
 
-const Item = ({ currency, product, theme, sendNewInvoice, currentNewInvoice }) => {
+// export const BtnProductInInvoice = ({
+//     productInInvoice, theme, handleAddQuantity, handleDiscountQuantity, handleQuantityInput }) => {
+
+//     return (
+//         <ContainerBtnProductInInvoice
+//             className="shoppingCart-btns"
+//             onClick={(e) => {
+//                 e.stopPropagation();
+//             }}
+//             aria-label="skip-drag"
+//         >
+//             <QuantityBtn
+//                 theme={theme}
+//                 onClick={handleDiscountQuantity}
+//                 aria-label="skip-drag"
+//             >
+//                 <SvgIcon component={MinusIcon}></SvgIcon>
+//             </QuantityBtn>
+//             <QuantityInput
+//                 aria-label="skip-drag"
+//                 onClick={(e) => {
+//                     e.stopPropagation();
+//                 }}
+//                 value={productInInvoice.quantityInInvoice}
+//                 onChange={(e) => {
+//                     handleQuantityInput(e, productInInvoice)
+//                 }}
+//             ></QuantityInput>
+
+//             {/* <NumberFormat
+//                                 customInput={TextField}
+//                                 name="quantity"
+//                                 label="Cantidad"
+//                                 variant="outlined"
+//                                 size="small"
+//                                 allowNegative={false}
+//                                 isAllowed={quantityIsAllowed}
+//                                 onValueChange={(e) => {
+//                                     const name = "quantity";
+//                                     const value = e.value;
+//                                     //console.log(e);
+//                                     send({
+//                                         type: "SETDATA",
+//                                         name,
+//                                         value
+//                                     });
+//                                 }}
+//                                 value={current.context.formData.quantity}
+//                                 helperText={`Disponible en inventario: ${current.context.formData.product.cantidad}`}
+//                             /> */}
+
+//             <QuantityBtn
+//                 theme={theme}
+//                 onClick={handleAddQuantity}
+//                 aria-label="skip-drag"
+//             >
+//                 <SvgIcon component={PlusIcon}></SvgIcon>
+//             </QuantityBtn>
+//         </ContainerBtnProductInInvoice>
+//     )
+// }
+
+const Item = ({ currency, product, theme, sendNewInvoice, currentNewInvoice, sendAddProduct }) => {
 
     return (
         <tr>
@@ -211,53 +155,32 @@ const Item = ({ currency, product, theme, sendNewInvoice, currentNewInvoice }) =
                     {product.codigo}
                 </Typography>
             </td>
-            <td>
+            <td colSpan={3}>
                 <Typography variant="subtitle2">
                     {product.nombre}
                 </Typography>
             </td>
-            <td>
-                <Typography variant="subtitle1">
-                    {product.cantidad}
-                </Typography>
-            </td>
-            <td>
-                <Typography className="font-weight-bold" variant="subtitle1">
-                    <NumberFormat
-                        customInput={TextField}
-                        prefix={currency.prefix}
-                        thousandSeparator="."
-                        decimalSeparator=","
-                        fixedDecimalScale={true}
-                        decimalScale={2}
-                        // displayType='text'
-                        value={parseFloat(product.precio_costo * currency.rate)}
-                    />
-                </Typography>
-            </td>
-
-            <td>
+            <td colSpan={1}>
                 <HandleQuantityBtns
                     theme={theme}
                     sendNewInvoice={sendNewInvoice}
                     currentNewInvoice={currentNewInvoice}
                     product={product}
+                    sendAddProduct={sendAddProduct}
                 />
             </td>
         </tr >
     )
 }
 
-const ProductsTables = ({ currency, products, theme, currentNewInvoice, sendNewInvoice }) => {
+const ProductsTables = ({ currency, products, theme, currentNewInvoice, sendNewInvoice, sendAddProduct }) => {
     return (
         <ProductsTable theme={theme}>
             <DataGridHeader>
                 <tr>
                     <th>Codigo</th>
-                    <th>Nombre</th>
-                    <th>Existencia</th>
-                    <th>Precio costo</th>
-                    <th>Acciones</th>
+                    <th colSpan={3}>Nombre</th>
+                    <th colSpan={1}>Acciones</th>
                 </tr>
             </DataGridHeader>
 
@@ -269,6 +192,7 @@ const ProductsTables = ({ currency, products, theme, currentNewInvoice, sendNewI
                         product={product}
                         currentNewInvoice={currentNewInvoice}
                         sendNewInvoice={sendNewInvoice}
+                        sendAddProduct={sendAddProduct}
                         currency={currency}
                     />
                 ))}
@@ -278,7 +202,7 @@ const ProductsTables = ({ currency, products, theme, currentNewInvoice, sendNewI
 }
 
 
-const AddProductModal = ({ currentNewInvoice, sendNewInvoice, theme }) => {
+const AddProductModal = ({ currentNewInvoice, sendNewInvoice, preSearch, theme, sendAddProduct }) => {
 
     return (
 
@@ -286,6 +210,8 @@ const AddProductModal = ({ currentNewInvoice, sendNewInvoice, theme }) => {
             currentNewInvoice={currentNewInvoice}
             sendNewInvoice={sendNewInvoice}
             ElHijo={ProductsTables}
+            preSearch={preSearch}
+            sendAddProduct={sendAddProduct}
         >
             {/*  {
                 !isEmpty(products) ? ( */}
