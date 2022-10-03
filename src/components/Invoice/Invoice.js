@@ -51,7 +51,7 @@ const Invoice = ({ products, isView = false, currency, removeProduct, currentInv
                             </div>
                         )}
                         {
-                            !isEmpty(products) ? (
+                            !isEmpty(products) && (
                                 products.map((producto, index) => (
                                     <Fragment key={index}>
                                         <div>
@@ -117,12 +117,7 @@ const Invoice = ({ products, isView = false, currency, removeProduct, currentInv
 
                                     </Fragment>
                                 ))
-                            ) : (
-                                <>Agrega productos a la factura</>
-
-
-
-                            )
+                            ) 
                         }
                     </ProductsGrid>
                 </DataGridContainer>

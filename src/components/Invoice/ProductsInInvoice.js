@@ -43,7 +43,7 @@ const ProductsInInvoice = ({ products, currency }) => {
                             <Typography>Precio T.</Typography>
                         </div>
                         {
-                            !isEmpty(products) ? (
+                            !isEmpty(products) && (
                                 products.map((producto, index) => (
                                     <Fragment key={index}>
                                         <div>
@@ -86,8 +86,6 @@ const ProductsInInvoice = ({ products, currency }) => {
                                         </div>
                                     </Fragment>
                                 ))
-                            ) : (
-                                <>Agrega productos a la factura</>
                             )
                         }
                     </ProductsGrid>

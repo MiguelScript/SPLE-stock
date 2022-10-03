@@ -17,7 +17,7 @@ import {
 import { Row, Col, FormControl } from "react-bootstrap";
 import AgregarProducto from './AgregarProducto';
 import { DataGridContainer, NewInvoiceHeader, ProductsGrid, SwicthContainer, SelectNewInvoiceHeader } from '../../components/NewInvoice/NewInvoice.styles';
-import { nuevaFacturaMachine } from '../../machines/facturacion/nuevaFacturaMachine';
+import { newBuyMachine } from '../../machines/buys/newBuyMachine';
 import { isEmpty } from "lodash";
 import ItemFactura from './ItemFactura'
 import ActionsFooter from './ActionsFooter'
@@ -40,7 +40,7 @@ const NewBuy = () => {
     const theme = useTheme();
     let history = useHistory();
     const SiteDataState = React.useContext(StoreStateContext);
-    const [current, send] = useMachine(nuevaFacturaMachine);
+    const [current, send] = useMachine(newBuyMachine);
     const [toggled, setToggled] = React.useState(false);
     const [currency, setcurrency] = React.useState(CURRENCY_DEFAULT);
     const modalState = React.useContext(ReusableModalStateContext);
@@ -94,14 +94,14 @@ const NewBuy = () => {
 
         }
 
-        modalDispatch(
-            {
-                type: "UPDATEPROPS",
-                modalProps: {
-                    currentNewInvoice: current,
-                },
-            }
-        )
+        // modalDispatch(
+        //     {
+        //         type: "UPDATEPROPS",
+        //         modalProps: {
+        //             currentNewInvoice: current,
+        //         },
+        //     }
+        // )
     }, [current]);
 
     return (
@@ -153,7 +153,7 @@ const NewBuy = () => {
                     <Row className='mt-3'>
                         <AddProdutToBuy
                             currentBuy={current}
-                            sendNewBuy={send}
+                            sendNewBuy={(data) => { send(data) }}
                             theme={theme}
                             currency={currency}
                         />
@@ -165,6 +165,7 @@ const NewBuy = () => {
                     sendInvoice={(data) => { send(data) }}
                     currency={currency}
                     removeProduct={(product) => { handleRemoveProduct(product) }}
+                    textEmpty="Agrega productos a la compra"
                 />
                 <ActionsFooter
                     total={current.context.subtotal}
@@ -173,6 +174,7 @@ const NewBuy = () => {
                     toggled={toggled}
                     setToggled={setToggled}
                     isCreate={true}
+                    textBtnAdd="Agregar compra"
                 />
             </>
 
@@ -186,7 +188,7 @@ const NewBuy = () => {
                         color="primary"
                         variant="contained"
                         onClick={() => {
-                            history.push("/facturacion");
+                            history.push("/compras");
                         }}
                     >
                         Volver

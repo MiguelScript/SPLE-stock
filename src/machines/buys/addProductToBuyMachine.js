@@ -38,7 +38,7 @@ export const addProductToBuyMachine = Machine(
                         actions: "clearFormData",
                     },
                 },
-                actions: "clearFormData",
+                // actions: "clearFormData",
             },
             dataError: {
                 /* on: {
@@ -52,7 +52,6 @@ export const addProductToBuyMachine = Machine(
         actions: {
             setFormData: assign({
                 formData: (_ctx, evt) => {
-                    console.log(evt);
                     return { ..._ctx.formData, [evt.name]: evt.value };
                 },
             }),
@@ -71,8 +70,9 @@ export const addProductToBuyMachine = Machine(
                 selectedProduct: (_ctx, evt) => null,
                 formData: (_ctx, evt) => {
                     return {
+                        ..._ctx.formData,
                         search: "",
-                        quantity: null,
+                        quantity: "",
                         price: null
                     }
                 },

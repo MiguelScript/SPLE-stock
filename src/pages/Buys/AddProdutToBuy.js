@@ -26,14 +26,13 @@ const AddProdutToBuy = ({ currentBuy, sendNewBuy, theme, currency }) => {
     };
 
     useEffect(() => {
-        if (current.matches('completedForm')) {
 
+        if (current.matches('completedForm')) {
             const productToAdd = {
                 ...current.context.selectedProduct,
                 quantityInInvoice: current.context.formData.quantity,
                 precio_costo: current.context.formData.price
             }
-
             sendNewBuy(
                 {
                     type: "ADDPRODUCT",
@@ -78,7 +77,7 @@ const AddProdutToBuy = ({ currentBuy, sendNewBuy, theme, currency }) => {
                     }}
                 />
                 <Button
-                    variant="containedPrimary"
+                    variant="contained"
                     color="secondary"
                     className='ml-2'
                     onClick={() => {
@@ -102,13 +101,25 @@ const AddProdutToBuy = ({ currentBuy, sendNewBuy, theme, currency }) => {
                 </Button>
             </Col>
             <Col xl={2}>
-                <TextField
+                <NumberFormat
+                    customInput={TextField}
+                    allowNegative={false}
+                    value={current.context.formData.quantity}
                     variant='outlined'
                     label="Cantidad"
                     name="quantity"
                     disabled={isProductSelect}
-                    onChange={handleChange}
-                    value={current.context.formData.quantity}
+                    onValueChange={(values) => {
+                        const { floatValue } = values;
+                        const name = "quantity";
+                        const value = floatValue;
+
+                        send({
+                            type: "SETDATA",
+                            name,
+                            value
+                        });
+                    }}
                     InputLabelProps={{
                         shrink: true,
                     }}

@@ -8,7 +8,7 @@ export const newBuyMachine = Machine(
         context: {
             responseMsg: "",
             search: "",
-            productsInBuy: [
+            products: [
             ],
             subtotal: 0,
         },
@@ -37,7 +37,7 @@ export const newBuyMachine = Machine(
                         }),
                     onDone: {
                         target: "editInvoice",
-                        actions: ["setGeneralData", "setResponseMsg"],
+                        actions: ["setResponseMsg"],
                     },
                     onError: { target: "dataError", actions: "setResponseMsg" },
                 },
@@ -47,9 +47,6 @@ export const newBuyMachine = Machine(
                     ADDPRODUCT: {
                         actions: ["addProductToInvoice", "updatePrice"],
                     },
-                    SETCUSTOMER: { actions: "setCustomer" },
-                    SETSELLER: { actions: "setSeller" },
-                    SETPAYMENTMETHOD: { actions: "setPaymentMethod" },
                     REMOVEPRODUCT: { actions: ["removeProductFromCart", "updatePrice"] },
                     HANDLEVISIBLE: { actions: "handleVisible" },
                     CHANGEQUANTITY: { actions: ["changeProductQuantity", "updatePrice"] },
@@ -73,19 +70,19 @@ export const newBuyMachine = Machine(
                                 try {
                                     let formData = new FormData();
 
-                                    formData.append("products", JSON.stringify(_ctx.productsInBuy));
+                                    formData.append("products", JSON.stringify(_ctx.products));
                                     formData.append("subtotal", _ctx.subtotal);
                                     formData.append("tasa_dolar_id", 1);
 
-                                    const { data: venta_id, /* status */ } = await api.post(
-                                        "api/ventas",
+                                    const { data: compra_id, /* status */ } = await api.post(
+                                        "api/compras",
                                         formData, {
                                         headers: { Authorization: `Bearer ${token}` },
                                     }
 
                                     );
-                                    console.log(venta_id);
-                                    resolve(venta_id);
+                                    console.log(compra_id);
+                                    resolve(compra_id);
                                 } catch (e) {
                                     reject({
                                         msg:
@@ -118,23 +115,8 @@ export const newBuyMachine = Machine(
     },
     {
         actions: {
-            setGeneralData: assign({
-                customers: (_ctx, evt) => evt.data.customers,
-                sellers: (_ctx, evt) => evt.data.sellers,
-                paymentMethods: (_ctx, evt) => evt.data.paymentMethods,
-            }),
-            setCustomer: assign({
-                customerId: (_ctx, evt) => evt.customerId,
-            }),
-            setSeller: assign({
-                sellerId: (_ctx, evt) => evt.sellerId,
-            }),
-            setPaymentMethod: assign({
-                paymentMethodId: (_ctx, evt) => evt.paymentMethodId,
-            }),
             addProductToInvoice: assign({
                 products: (_ctx, evt) => {
-                    //evt.value.quantity = 1;
                     let productToAdd = evt.product;
                     if (
                         _ctx.products.filter((product) => product.id === productToAdd.id)
@@ -143,7 +125,6 @@ export const newBuyMachine = Machine(
                         return _ctx.products;
                     }
 
-                    productToAdd.quantityInInvoice = 1;
                     return [..._ctx.products, productToAdd];
                 },
             }),
@@ -172,39 +153,6 @@ export const newBuyMachine = Machine(
 
                     return _ctx.products;
                 },
-                productToDelete: (_ctx, evt) => {
-                    let productToDelete = _ctx.productToDelete;
-                    if (!evt.fromInput && evt.quantity === 0) {
-                        // _ctx.productsToDelete.push(evt.value.id);
-                        productToDelete = evt.product.id;
-                    }
-
-                    return productToDelete;
-                },
-            }),
-            setProductCartId: assign({
-                products: (_ctx, evt) => {
-                    let productToEdit = _ctx.products.find(
-                        (product) => product.id === evt.data.product_id
-                    );
-                    let cantidadDisponible = evt.data.data.data.cantidad_disponible;
-                    if (productToEdit) {
-                        productToEdit.cantidad_disponible = cantidadDisponible;
-                        productToEdit.quantity = parseInt(
-                            evt.data.data.data.cantidad_producto
-                        );
-                        if (productToEdit.quantity <= 0) {
-                            const productIndex = _ctx.products.findIndex(
-                                (product) => product.id === evt.data.product_id
-                            );
-                            _ctx.products.splice(productIndex, 1);
-                        }
-                    }
-
-                    return _ctx.products;
-                },
-                cartId: (_ctx, evt) => evt.data.data.data.carrito_id,
-                shownAlert: true,
             }),
             cleanDeleteProduct: assign({
                 productToDelete: "",

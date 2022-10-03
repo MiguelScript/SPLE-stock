@@ -23,15 +23,14 @@ export const viewInvoiceMachine = Machine(
               const token = localStorage.token;
               if (token) {
                 try {
-                  const { data: results } = await api.get(
-                    "api/ventas",
+                  const { data: results, status } = await api.get(
+                    "api/ventas/" + evt.invoiceId,
                     {
                       headers: { Authorization: `Bearer ${token}` },
                     }
                   );
-
-                  if (results.status === 200) {
-                    resolve(results.invoice);
+                  if (status === 200) {
+                    resolve(results.data);
                   } else {
                     reject(results);
                   }
@@ -70,7 +69,7 @@ export const viewInvoiceMachine = Machine(
   {
     actions: {
       setInvoice: assign({
-        invoice: (_ctx, evt) => evt.invoice,
+        invoice: (_ctx, evt) => evt.data,
         fetchError: false,
       }),
 

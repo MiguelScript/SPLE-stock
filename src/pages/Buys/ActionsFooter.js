@@ -7,7 +7,7 @@ import NumberFormat from 'react-number-format';
 
 
 
-const ActionsFooter = ({ total, facturar, currency, isCreate = false }) => {
+const ActionsFooter = ({ total, facturar, currency, textBtnAdd = 'Facturar', isCreate = false }) => {
 
     return (
         <div>
@@ -38,7 +38,7 @@ const ActionsFooter = ({ total, facturar, currency, isCreate = false }) => {
                                         type="submit"
                                         onClick={facturar}
                                     >
-                                        Facturar
+                                        {textBtnAdd}
                                     </Button>
                                 </Col>
                             )

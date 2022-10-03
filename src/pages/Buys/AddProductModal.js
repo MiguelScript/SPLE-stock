@@ -7,6 +7,7 @@ import { ProductsGrid, DataGridContainer, ProductsTable, DataGridHeader, Product
 import { ButtonBase, Button, Typography, TextField, SvgIcon } from "@material-ui/core";
 import isEmpty from 'lodash/isEmpty';
 import AddIcon from "@material-ui/icons/Add";
+import { ReusableModalDispatchContext } from '../../context/ReusableModal/reusable-modal';
 
 export const QuantityBtn = styled(ButtonBase)`
   background-color: #fff !important;
@@ -53,6 +54,7 @@ export const ContainerBtnProductInInvoice = styled.div`
 export const HandleQuantityBtns = ({
     product, theme, currentNewInvoice,
     sendNewInvoice, sendAddProduct }) => {
+    const modalDispatch = React.useContext(ReusableModalDispatchContext);
 
     const handleAddProduct = (product) => {
         //e.stopPropagation();
@@ -61,6 +63,11 @@ export const HandleQuantityBtns = ({
                 type: "SETSELECTEDPRODUCT",
                 product: product,
             }
+        )
+
+        modalDispatch({
+            type: "CLOSEMODAL"
+        }
         )
     };
 
@@ -84,67 +91,6 @@ export const HandleQuantityBtns = ({
     )
 }
 
-// export const BtnProductInInvoice = ({
-//     productInInvoice, theme, handleAddQuantity, handleDiscountQuantity, handleQuantityInput }) => {
-
-//     return (
-//         <ContainerBtnProductInInvoice
-//             className="shoppingCart-btns"
-//             onClick={(e) => {
-//                 e.stopPropagation();
-//             }}
-//             aria-label="skip-drag"
-//         >
-//             <QuantityBtn
-//                 theme={theme}
-//                 onClick={handleDiscountQuantity}
-//                 aria-label="skip-drag"
-//             >
-//                 <SvgIcon component={MinusIcon}></SvgIcon>
-//             </QuantityBtn>
-//             <QuantityInput
-//                 aria-label="skip-drag"
-//                 onClick={(e) => {
-//                     e.stopPropagation();
-//                 }}
-//                 value={productInInvoice.quantityInInvoice}
-//                 onChange={(e) => {
-//                     handleQuantityInput(e, productInInvoice)
-//                 }}
-//             ></QuantityInput>
-
-//             {/* <NumberFormat
-//                                 customInput={TextField}
-//                                 name="quantity"
-//                                 label="Cantidad"
-//                                 variant="outlined"
-//                                 size="small"
-//                                 allowNegative={false}
-//                                 isAllowed={quantityIsAllowed}
-//                                 onValueChange={(e) => {
-//                                     const name = "quantity";
-//                                     const value = e.value;
-//                                     //console.log(e);
-//                                     send({
-//                                         type: "SETDATA",
-//                                         name,
-//                                         value
-//                                     });
-//                                 }}
-//                                 value={current.context.formData.quantity}
-//                                 helperText={`Disponible en inventario: ${current.context.formData.product.cantidad}`}
-//                             /> */}
-
-//             <QuantityBtn
-//                 theme={theme}
-//                 onClick={handleAddQuantity}
-//                 aria-label="skip-drag"
-//             >
-//                 <SvgIcon component={PlusIcon}></SvgIcon>
-//             </QuantityBtn>
-//         </ContainerBtnProductInInvoice>
-//     )
-// }
 
 const Item = ({ currency, product, theme, sendNewInvoice, currentNewInvoice, sendAddProduct }) => {
 
@@ -212,6 +158,7 @@ const AddProductModal = ({ currentNewInvoice, sendNewInvoice, preSearch, theme, 
             ElHijo={ProductsTables}
             preSearch={preSearch}
             sendAddProduct={sendAddProduct}
+            showCurrencySwitch={false}
         >
             {/*  {
                 !isEmpty(products) ? ( */}

@@ -62,8 +62,8 @@ const Hijo = ({ currency, children, products }) => {
 function SearchProductModal({
     closeModal,
     ElHijo,
+    showCurrencySwitch = true,
     ...props
-
 }) {
 
     const theme = useTheme();
@@ -128,40 +128,27 @@ function SearchProductModal({
                         />
                     </Col>
                     <Col md={6}>
-                        <SwicthContainer>
-                            <Typography
-                                variant="subtitle2"
-                            >
-                                Mostrar montos en Bs.S:<Switch
-                                    color="primary"
-                                    checked={toggled}
-                                    onChange={e => handleToggle(e.target.checked)}
-                                />
-                            </Typography>
+                        {showCurrencySwitch && (
+                            <SwicthContainer>
+                                <Typography
+                                    variant="subtitle2"
+                                >
+                                    Mostrar montos en Bs.S:<Switch
+                                        color="primary"
+                                        checked={toggled}
+                                        onChange={e => handleToggle(e.target.checked)}
+                                    />
+                                </Typography>
 
-                        </SwicthContainer>
+                            </SwicthContainer>
+                        )}
+
                     </Col>
                     <Col xl={12} className="mt-3 px-0 justify-content-center">
                         <DataGridContainer>
                             {current.matches("dataReady") ? (
                                 !isEmpty(current.context.productos) ? (
-
-
-                                    /* children &&
-                                    React.createElement(children, {
-                                        theme: theme,
-                                        currency: currency,
-                                        products: current.context.productos,
-                                    }) */
-
                                     <>
-                                        {/* <Hijo
-                                        currency={currency}
-                                        children={children}
-                                        products={current.context.productos}
-                                    /> */}
-
-                                        
                                         <ElHijo
                                             currency={currency}
                                             products={current.context.productos}
@@ -169,7 +156,6 @@ function SearchProductModal({
                                             {...props}
                                         />
                                     </>
-
                                 ) : (
                                     <div>no hay productos por este nombre</div>
                                 )
@@ -184,7 +170,7 @@ function SearchProductModal({
                                         <div>
                                             <Typography variant="h5">
                                                 Escribe para buscar productos
-                                        </Typography>
+                                            </Typography>
                                         </div>
                                     )}
                                 </div>

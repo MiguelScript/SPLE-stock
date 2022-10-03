@@ -48,6 +48,7 @@ const Buys = () => {
     history.push('compras/nuevo');
   }
   const handleViewInvoice = (buy) => {
+    console.log(buy)
     history.push("compras/" + String(buy.id), {
       "buy": buy
     });
@@ -153,7 +154,7 @@ const Buys = () => {
                           fixedDecimalScale={true}
                           decimalScale={2}
                           displayType={"text"}
-                          value={parseFloat(buy.monto_venta)}
+                          value={parseFloat(buy.subtotal)}
                         />
 
                       </Typography>

@@ -10,7 +10,8 @@ import {
     ClickAwayListener,
     ButtonBase,
     Tooltip, */
-    Switch
+    Switch,
+    TextField
 } from "@material-ui/core";
 import { Row, Col, FormControl } from "react-bootstrap";
 import AgregarProducto from './AgregarProducto';
@@ -61,10 +62,17 @@ const NuevaFactura = () => {
         });
     }
 
+    const handleChange = (name, value) => {
+        send({
+            type: "SETDATA",
+            name: name,
+            value: value
+        })
+    }
+
     const handleToggle = (toggle) => {
         setToggled(toggle)
     }
-
 
     useEffect(() => {
         if (toggled === true) {
@@ -133,10 +141,7 @@ const NuevaFactura = () => {
                                 </Typography>
                                 <SelectCustomer
                                     options={current.context.customers}
-                                    setCustomer={(customerId) => send({
-                                        type: "SETCUSTOMER",
-                                        customerId: customerId,
-                                    })}
+                                    setCustomer={(customerId) => handleChange("customerId", customerId)}
                                 />
                             </div>
                         </Col>
@@ -150,10 +155,7 @@ const NuevaFactura = () => {
                                 </Typography>
                                 <SelectSeller
                                     options={current.context.sellers}
-                                    setSeller={(sellerId) => send({
-                                        type: "SETSELLER",
-                                        sellerId: sellerId,
-                                    })}
+                                    setSeller={(sellerId) => handleChange("sellerId", sellerId)}
                                 />
                             </div>
 
@@ -167,16 +169,36 @@ const NuevaFactura = () => {
                                 </Typography>
                                 <SelectPaymentMethod
                                     options={current.context.paymentMethods}
-                                    setPaymentMethod={(paymentMethodId) => send({
-                                        type: "SETPAYMENTMETHOD",
-                                        paymentMethodId: paymentMethodId,
-                                    })}
+                                    setPaymentMethod={(paymentMethodId) => handleChange("paymentMethodId", paymentMethodId)}
                                 />
                             </div>
                         </Col>
                     </Row>
-                    <Row>
-
+                    <Row
+                        className='mt-4'
+                    >
+                        <Col xl={4}>
+                            <div>
+                                <Typography
+                                    variant='h6'
+                                >
+                                    Observaciones:
+                                </Typography>
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    className='mt-2'
+                                    label="Observaciones"
+                                    name="observations"
+                                    variant='outlined'
+                                    multiline
+                                    rows={4}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    onChange={(e) => handleChange("observations", e.target.value)}
+                                />
+                            </div>
+                        </Col>
                     </Row>
                     <Row className='mt-4'>
                         <Col md={10}>

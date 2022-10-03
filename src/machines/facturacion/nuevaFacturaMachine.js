@@ -6,13 +6,16 @@ export const nuevaFacturaMachine = Machine(
         id: "nuevaFacturaMachine",
         initial: "fetchData",
         context: {
-            customerId: null,
-            sellerId: null,
-            paymentMethodId: null,
-            responseMsg: "",
+            formData: {
+                observations: null,
+                customerId: null,
+                sellerId: null,
+                paymentMethodId: null,
+            },
+            subtotal: 0,
+
             products: [
             ],
-            subtotal: 0,
             customers: [],
             sellers: [],
             paymentMethods: [
@@ -24,7 +27,8 @@ export const nuevaFacturaMachine = Machine(
                     id: 2,
                     name: 'Pago movil',
                 }
-            ]
+            ],
+            responseMsg: ""
         },
         states: {
             fetchData: {
@@ -61,9 +65,9 @@ export const nuevaFacturaMachine = Machine(
                     ADDPRODUCT: {
                         actions: ["addProductToInvoice", "updatePrice"],
                     },
-                    SETCUSTOMER: { actions: "setCustomer" },
-                    SETSELLER: { actions: "setSeller" },
-                    SETPAYMENTMETHOD: { actions: "setPaymentMethod" },
+                    SETDATA: {
+                        actions: "setFormData",
+                    },
                     REMOVEPRODUCT: { actions: ["removeProductFromCart", "updatePrice"] },
                     HANDLEVISIBLE: { actions: "handleVisible" },
                     CHANGEQUANTITY: { actions: ["changeProductQuantity", "updatePrice"] },
@@ -87,12 +91,13 @@ export const nuevaFacturaMachine = Machine(
                                 try {
                                     let formData = new FormData();
 
-                                    formData.append("products", JSON.stringify(_ctx.products));
                                     formData.append("subtotal", _ctx.subtotal);
+                                    formData.append("observations", _ctx.formData.observations);
+                                    formData.append("products", JSON.stringify(_ctx.products));
                                     formData.append("tasa_dolar_id", 1);
-                                    formData.append("customerId", _ctx.customerId);
-                                    formData.append("sellerId", _ctx.sellerId);
-                                    formData.append("paymentMethodId", _ctx.paymentMethodId);
+                                    formData.append("customerId", _ctx.formData.customerId);
+                                    formData.append("sellerId", _ctx.formData.sellerId);
+                                    formData.append("paymentMethodId", _ctx.formData.paymentMethodId);
 
                                     const { data: venta_id, /* status */ } = await api.post(
                                         "api/ventas",
@@ -122,6 +127,10 @@ export const nuevaFacturaMachine = Machine(
             },
             dataError: {
                 on: {
+                    SETDATA: {
+                        target: "editInvoice",
+                        actions: "setFormData",
+                    },
                     //FETCHPRODUCTS: { target: "fetchProductos" },
                     //SEARCH: { actions: "searchProductos", target: "fetchProductos" },
                 },
@@ -140,14 +149,10 @@ export const nuevaFacturaMachine = Machine(
                 sellers: (_ctx, evt) => evt.data.sellers,
                 paymentMethods: (_ctx, evt) => evt.data.paymentMethods,
             }),
-            setCustomer: assign({
-                customerId: (_ctx, evt) => evt.customerId,
-            }),
-            setSeller: assign({
-                sellerId: (_ctx, evt) => evt.sellerId,
-            }),
-            setPaymentMethod: assign({
-                paymentMethodId: (_ctx, evt) => evt.paymentMethodId,
+            setFormData: assign({
+                formData: (_ctx, evt) => {
+                    return { ..._ctx.formData, [evt.name]: evt.value };
+                },
             }),
             addProductToInvoice: assign({
                 products: (_ctx, evt) => {

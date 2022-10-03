@@ -1,12 +1,12 @@
 import { Machine, assign } from "xstate";
 import api from "../../config/api";
 
-export const viewInvoiceMachine = Machine(
+export const viewBuyMachine = Machine(
   {
-    id: "viewInvoiceMachine",
+    id: "viewBuyMachine",
     initial: "idle",
     context: {
-      invoice: null,
+      buy: null,
       responseMsg: "",
     },
     states: {
@@ -24,14 +24,14 @@ export const viewInvoiceMachine = Machine(
               if (token) {
                 try {
                   const { data: results } = await api.get(
-                    "api/ventas",
+                    "api/compras",
                     {
                       headers: { Authorization: `Bearer ${token}` },
                     }
                   );
-
+                  console.log(results.buy)
                   if (results.status === 200) {
-                    resolve(results.invoice);
+                    resolve(results.buy);
                   } else {
                     reject(results);
                   }
@@ -70,7 +70,7 @@ export const viewInvoiceMachine = Machine(
   {
     actions: {
       setInvoice: assign({
-        invoice: (_ctx, evt) => evt.invoice,
+        buy: (_ctx, evt) => evt.buy,
         fetchError: false,
       }),
 

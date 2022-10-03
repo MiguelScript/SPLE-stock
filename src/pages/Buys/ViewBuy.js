@@ -24,7 +24,8 @@ import { CURRENCY_DEFAULT } from "../../config/constants";
 import ProductsInInvoice from "../../components/Invoice/ProductsInInvoice";
 import moment from "moment";
 import { useHistory, useLocation } from 'react-router-dom';
-import { viewInvoiceMachine } from '../../machines/facturacion/viewInvoiceMachine';
+import { viewBuyMachine } from '../../machines/buys/viewBuyMachine';
+import { DateTime } from 'luxon';
 
 
 
@@ -36,30 +37,19 @@ const ViewBuy = () => {
     const SiteDataState = React.useContext(StoreStateContext);
     const [toggled, setToggled] = React.useState(false);
     const [currency, setcurrency] = React.useState(CURRENCY_DEFAULT);
-    const [current, send] = useMachine(viewInvoiceMachine);
+    const [current, send] = useMachine(viewBuyMachine);
 
     const handleToggle = (toggle) => {
         setToggled(toggle)
     }
 
-    const handleDateReFormat = (date) => {
-        let stringDate = moment(new Date(date)).format("LL");
-        let StringDia = moment(new Date(date)).format('dddd').charAt(0).toUpperCase() + moment(new Date(date)).format('dddd').slice(1);
-        let StringHora = moment(new Date(date)).locale('en').format("LT");
-        return (
-            `${StringDia}, ${stringDate} ${StringHora} `
-        );
-    };
-
     useEffect(() => {
-        console.log(SiteDataState.dollarRate.context.dollarRate);
-        let invoice = location.state?.invoice;
-        if (invoice === undefined || invoice === null) {
-            console.log("buscar");
+        let buy = location.state?.buy;
+
+        if (buy === undefined || buy === null || buy === '') {
             send({ type: "FETCHTINVOICE" });
         } else {
-            console.log("seteat");
-            send({ type: "SETINVOICE", invoice });
+            send({ type: "SETINVOICE", buy });
         }
     }, []);
 
@@ -82,12 +72,12 @@ const ViewBuy = () => {
     return current.matches("dataReady") ? (
         <>
             <div className="d-flex justify-content-between mb-3">
-                <Typography variant="h6">Ver Factura</Typography>
+                <Typography variant="h6">Ver Compra</Typography>
                 <Button
                     color="primary"
                     variant="contained"
                     onClick={() => {
-                        history.push("/facturacion")
+                        history.push("/compras")
                     }}
                 >
                     Volver
@@ -111,7 +101,7 @@ const ViewBuy = () => {
                                     Codigo
                                 </Typography>
                                 <Typography variant="h6" className="font-weight-bold">
-                                    {current.context.invoice.codigo}
+                                    {current.context.buy.codigo}
                                 </Typography>
                             </Col>
                             <Col
@@ -127,7 +117,9 @@ const ViewBuy = () => {
                                     Fecha de creación
                                 </Typography>
                                 <Typography variant="h6" className="font-weight-bold">
-                                    {handleDateReFormat(current.context.invoice.created_at)}
+                                    {DateTime.fromISO(current.context.buy.created_at)
+                                        .setLocale("es")
+                                        .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
                                 </Typography>
                             </Col>
 
@@ -150,13 +142,13 @@ const ViewBuy = () => {
                 </Row>
             </NewInvoiceHeader>
             <ProductsInInvoice
-                products={current.context.invoice.products}
+                products={current.context.buy.products}
                 currency={currency}
             />
             <ActionsFooter
-                total={current.context.invoice.products.reduce(
+                total={current.context.buy.products.reduce(
                     (accumulator, product) =>
-                        parseFloat(product.pivot.producto_precio_unitario) + parseFloat(accumulator), 0
+                        parseFloat(product.pivot.producto_precio_unitario) * product.pivot.producto_cantidad + parseFloat(accumulator), 0
                 )}
                 currency={currency}
             />
