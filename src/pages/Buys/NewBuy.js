@@ -32,6 +32,7 @@ import Invoice from "../../components/Invoice/Invoice";
 import { useHistory } from 'react-router-dom';
 import CompletedFormLayout from '../../components/Common/CompletedFormLayout';
 import AddProdutToBuy from './AddProdutToBuy';
+import Buy from '../../components/Buy/Buy';
 
 
 
@@ -159,7 +160,7 @@ const NewBuy = () => {
                         />
                     </Row>
                 </NewInvoiceHeader>
-                <Invoice
+                <Buy
                     products={current.context.products}
                     currentInvoice={current}
                     sendInvoice={(data) => { send(data) }}

@@ -16,7 +16,9 @@ import { ReusableDrawerDispatchContext } from "../../../context/ReusableDrawer/r
 import CambiarEstado from "./Drawers/CambiarEstado";
 import CancelarPedido from "./Drawers/CancelarPedido";
 import HistorialAcciones from "./Drawers/HistorialAcciones";
+import { useHistory } from "react-router-dom";
 export default function CustomerSidebar({ sendParent, customer }) {
+  let history = useHistory();
   const theme = useTheme();
   const reusableDrawerDispatch = React.useContext(
     ReusableDrawerDispatchContext
@@ -32,7 +34,7 @@ export default function CustomerSidebar({ sendParent, customer }) {
           color="primary"
           className="mt-2"
           onClick={() => {
-            sendParent({ type: "GOTODATAGRID" });
+            history.push("/customers")
           }}
         >
           {" "}

@@ -1,5 +1,5 @@
 import React, { useEffect, Fragment, useContext, useRef } from 'react';
-import { BackgroundFactura, BackgroundFooterFactura } from '../../components/Factura/Paper';
+import { BackgroundFactura, BackgroundFooterFactura } from '../Factura/Paper';
 import {
     useTheme,
     SvgIcon,
@@ -11,14 +11,11 @@ import {
     Switch
 } from "@material-ui/core";
 import { Row, Col, FormControl } from "react-bootstrap";
-import { DataGridContainer, NewInvoiceHeader, ProductsGrid, SwicthContainer } from '../../components/NewInvoice/NewInvoice.styles';
+import { DataGridContainer, NewInvoiceHeader, ProductsGrid, SwicthContainer } from '../NewInvoice/ShowInvoice.styles';
 import { isEmpty } from "lodash";
-import { ReactComponent as TrashIcon } from "../../assets/icons/bx-trash.svg";
 import NumberFormat from 'react-number-format';
-import DeleteContained from '../../components/Buttons/DeleteContained';
-import { HandleQuantityBtns } from '../../pages/Facturacion/AddProductModal';
 
-const Invoice = ({ products, isView = false, currency, removeProduct, currentInvoice, sendInvoice }) => {
+const ProductsInBuy = ({ products, currency }) => {
     const theme = useTheme();
     const dataGridContent = useRef();
 
@@ -36,20 +33,15 @@ const Invoice = ({ products, isView = false, currency, removeProduct, currentInv
                         <div className="header-column">
                             <Typography>Nombre</Typography>
                         </div>
-                        <div className="header-column numeric">
+                        <div className="header-column">
                             <Typography>cantidad</Typography>
                         </div>
-                        <div className="header-column numeric">
+                        <div className="header-column">
                             <Typography>Precio U.</Typography>
                         </div>
-                        <div className="header-column numeric">
+                        <div className="header-column">
                             <Typography>Precio T.</Typography>
                         </div>
-                        {isView === false && (
-                            <div className="header-column">
-                                <Typography>Acciones</Typography>
-                            </div>
-                        )}
                         {
                             !isEmpty(products) && (
                                 products.map((producto, index) => (
@@ -59,18 +51,12 @@ const Invoice = ({ products, isView = false, currency, removeProduct, currentInv
                                                 {producto.nombre}
                                             </Typography>
                                         </div>
-                                        <div className='numeric'>
-                                            {/* <Typography className="product-attribute" variant="h6">
-                                                {producto.quantityInInvoice}
-                                            </Typography> */}
-                                            <HandleQuantityBtns
-                                                theme={theme}
-                                                currentNewInvoice={currentInvoice}
-                                                sendNewInvoice={sendInvoice}
-                                                product={producto}
-                                            />
+                                        <div>
+                                            <Typography className="product-attribute" variant="h6">
+                                                {producto.pivot.producto_cantidad}
+                                            </Typography>
                                         </div>
-                                        <div className='numeric'>
+                                        <div>
                                             <Typography className="product-attribute font-weight-bold" variant="h6">
                                                 <NumberFormat
                                                     //customInput={TextField}
@@ -80,11 +66,11 @@ const Invoice = ({ products, isView = false, currency, removeProduct, currentInv
                                                     fixedDecimalScale={true}
                                                     decimalScale={2}
                                                     displayType='text'
-                                                    value={parseFloat(producto.precio_venta * currency.rate)}
+                                                    value={parseFloat(producto.pivot.producto_precio_unitario * currency.rate)}
                                                 />
                                             </Typography>
                                         </div>
-                                        <div className='numeric'>
+                                        <div>
                                             <Typography className="product-attribute font-weight-bold" variant="h6">
                                                 <NumberFormat
                                                     //customInput={TextField}
@@ -94,30 +80,13 @@ const Invoice = ({ products, isView = false, currency, removeProduct, currentInv
                                                     fixedDecimalScale={true}
                                                     decimalScale={2}
                                                     displayType='text'
-                                                    value={parseFloat(producto.quantityInInvoice * producto.precio_venta * currency.rate)}
+                                                    value={parseFloat(producto.pivot.producto_cantidad * producto.pivot.producto_precio_unitario * currency.rate)}
                                                 />
                                             </Typography>
                                         </div>
-                                        {
-                                            isView === false && (
-                                                <div>
-                                                    <Tooltip title="Eliminar">
-                                                        <DeleteContained
-                                                            onClick={() => {
-                                                                removeProduct(producto)
-                                                            }}
-                                                        >
-                                                            <SvgIcon component={TrashIcon}></SvgIcon>
-                                                        </DeleteContained>
-                                                    </Tooltip>
-
-                                                </div>
-                                            )
-                                        }
-
                                     </Fragment>
                                 ))
-                            ) 
+                            )
                         }
                     </ProductsGrid>
                 </DataGridContainer>
@@ -126,4 +95,4 @@ const Invoice = ({ products, isView = false, currency, removeProduct, currentInv
     );
 }
 
-export default Invoice;
+export default ProductsInBuy;

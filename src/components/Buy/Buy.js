@@ -1,5 +1,5 @@
 import React, { useEffect, Fragment, useContext, useRef } from 'react';
-import { BackgroundFactura, BackgroundFooterFactura } from '../../components/Factura/Paper';
+import { BackgroundFactura, BackgroundFooterFactura } from '../Factura/Paper';
 import {
     useTheme,
     SvgIcon,
@@ -11,14 +11,14 @@ import {
     Switch
 } from "@material-ui/core";
 import { Row, Col, FormControl } from "react-bootstrap";
-import { DataGridContainer, NewInvoiceHeader, ProductsGrid, SwicthContainer } from '../../components/NewInvoice/NewInvoice.styles';
+import { DataGridContainer, NewInvoiceHeader, ProductsGrid, SwicthContainer } from '../NewInvoice/NewInvoice.styles';
 import { isEmpty } from "lodash";
 import { ReactComponent as TrashIcon } from "../../assets/icons/bx-trash.svg";
 import NumberFormat from 'react-number-format';
-import DeleteContained from '../../components/Buttons/DeleteContained';
+import DeleteContained from '../Buttons/DeleteContained';
 import { HandleQuantityBtns } from '../../pages/Facturacion/AddProductModal';
 
-const Invoice = ({ products, isView = false, currency, removeProduct, currentInvoice, sendInvoice }) => {
+const Buy = ({ products, isView = false, currency, removeProduct, currentInvoice, sendInvoice }) => {
     const theme = useTheme();
     const dataGridContent = useRef();
 
@@ -80,7 +80,7 @@ const Invoice = ({ products, isView = false, currency, removeProduct, currentInv
                                                     fixedDecimalScale={true}
                                                     decimalScale={2}
                                                     displayType='text'
-                                                    value={parseFloat(producto.precio_venta * currency.rate)}
+                                                    value={parseFloat(producto.precio_costo * currency.rate)}
                                                 />
                                             </Typography>
                                         </div>
@@ -94,7 +94,7 @@ const Invoice = ({ products, isView = false, currency, removeProduct, currentInv
                                                     fixedDecimalScale={true}
                                                     decimalScale={2}
                                                     displayType='text'
-                                                    value={parseFloat(producto.quantityInInvoice * producto.precio_venta * currency.rate)}
+                                                    value={parseFloat(producto.quantityInInvoice * producto.precio_costo * currency.rate)}
                                                 />
                                             </Typography>
                                         </div>
@@ -126,4 +126,4 @@ const Invoice = ({ products, isView = false, currency, removeProduct, currentInv
     );
 }
 
-export default Invoice;
+export default Buy;

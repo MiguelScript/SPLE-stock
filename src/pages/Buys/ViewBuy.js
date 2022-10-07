@@ -26,6 +26,7 @@ import moment from "moment";
 import { useHistory, useLocation } from 'react-router-dom';
 import { viewBuyMachine } from '../../machines/buys/viewBuyMachine';
 import { DateTime } from 'luxon';
+import ProductsInBuy from '../../components/Buy/ProductsInBuy';
 
 
 
@@ -141,7 +142,7 @@ const ViewBuy = () => {
                     </Col>
                 </Row>
             </NewInvoiceHeader>
-            <ProductsInInvoice
+            <ProductsInBuy
                 products={current.context.buy.products}
                 currency={currency}
             />

@@ -13,6 +13,7 @@ import ViewInvoice from "./pages/Facturacion/ViewInvoice";
 import NuevaFactura from "./pages/Facturacion/NuevaFactura";
 import NewBuy from "./pages/Buys/NewBuy";
 import ViewBuy from "./pages/Buys/ViewBuy";
+import Customer from "./pages/Customers/Customer/Customer";
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const Users = lazy(() => import("./pages/StaffMembers/StaffMembers"));
 const Config = lazy(() => import("./pages/Settings/Settings"));
@@ -87,6 +88,8 @@ const Routes = () => {
         <PrivateRoute exact path="/compras/nuevo" component={NewBuy} hasDrawer={true}/>
         <PrivateRoute exact path="/compras/:id" component={ViewBuy} hasDrawer={true}/>
         <PrivateRoute exact path="/settings" component={Config} hasDrawer={true} />
+        <PrivateRoute exact path="/customers" component={Customers} hasDrawer={true} />
+        <PrivateRoute exact path="/customers/:id" component={Customer} hasDrawer={true}/>
         <PrivateRoute
           exact
           path="/settings/metodos-pago"
@@ -102,12 +105,6 @@ const Routes = () => {
           exact
           path={PAGO_MOVIL}
           component={PagoMovilAccounts}
-          hasDrawer={true}
-        />
-        <PrivateRoute
-          exact
-          path={CUSTOMERS}
-          component={Customers}
           hasDrawer={true}
         />
         <Route exact path="/login">

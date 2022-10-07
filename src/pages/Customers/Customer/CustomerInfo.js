@@ -24,7 +24,7 @@ export default function CustomerInfo({ order, sendParent,currentParent }) {
     <>
       <PaymentInfo theme={theme}>
         <Typography variant="h6" className="payment-header-title">
-          Ordenes <SvgIcon component={PaymentIcon}></SvgIcon>
+          Ventas <SvgIcon component={PaymentIcon}></SvgIcon>
         </Typography>
         <Row className="mt-2 w-100 no-gutters">
          <CustomerOrders currentParent={currentParent} sendParent={sendParent} />

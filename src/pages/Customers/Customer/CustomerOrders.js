@@ -2,37 +2,39 @@ import React, { useEffect, Fragment, useContext, useRef } from "react";
 import styled from "styled-components";
 import { Row, Col, FormControl } from "react-bootstrap";
 import { Typography, SvgIcon, useTheme, Badge } from "@material-ui/core";
-import { TIPO_PEDIDO, ESTADOS_PEDIDO } from "../../../config/constants";
+import { TIPO_PEDIDO, ESTADOS_PEDIDO, ESTADOS_FACTURA } from "../../../config/constants";
 import Paginador from "../../../components/Common/Paginador";
 import { Button } from "@material-ui/core";
 import {
   DataGridHeader,
   DataGridContainer,
-  DataGrid,
+  DataGridCustomerOrders,
   MainColumn,
 } from "../../../components/data-grid/data-grid.styles";
 import { useMachine } from "@xstate/react";
 import { customerOrdersMachine } from "../../../machines/customers/customerOrders";
 import { AuthStateContext } from "../../../context/Auth/Auth";
 import { isEmpty } from "lodash";
-import moment from "moment";
-import localization from "moment/locale/es";
 import Skeleton from "react-loading-skeleton";
 import Order from "../../Orders/Order/Order";
+import LoadingSpinner from "../../../components/Loading/LoadingSpinner";
+import NumberFormat from "react-number-format";
+import { DateTime } from "luxon";
+import { useHistory } from "react-router-dom";
 const ActionsContainer = styled.div`
   display: flex;
 `;
 
-const CustomerOrders = ({sendParent,currentParent}) => {
+const CustomerOrders = ({ sendParent, currentParent }) => {
   const theme = useTheme();
   const [current, send] = useMachine(customerOrdersMachine);
   const authState = useContext(AuthStateContext);
+  let history = useHistory();
   const dataGridContent = useRef();
   const handleChangeSearch = (e) => {
     const { name, value } = e.target;
     send({ type: "SEARCH", value });
   };
-
 
 
   const handleFilter = (e) => {
@@ -46,102 +48,117 @@ const CustomerOrders = ({sendParent,currentParent}) => {
     }
   };
 
-  const handleDateReFormat = (date) => {
-    return moment(new Date(date)).fromNow();
-  };
-
-  const handleOrder = (order) => {
-    sendParent({ type: "GOTOORDER", data: order });
-  };
-
   useEffect(() => {
     dataGridContent.current.scrollTo(0, 0);
   }, [current.context.pageInfo.limit]);
 
 
   useEffect(() => {
+    send({ type: "SETORDERS", orders: currentParent.context.customer.sales });
+
     if (authState.matches("LoggedIn")) {
-      send({ type: "FETCHORDERS", data: authState.context.userData.rol_id,customer_id:currentParent.context.selectedCustomer.id });
+      // send({ type: "FETCHORDERS", data: authState.context.userData.rol_id,customer_id:currentParent.context.selectedCustomer.id });
     }
-  }, [authState]);
-  useEffect(() => {
-    moment.updateLocale("es", localization);
   }, []);
+
+  const handleViewInvoice = (invoice) => {
+    history.push("/facturacion/" + String(invoice.id));
+  };
+
   return (
-       <>
+    <>
       <Col xl={12}>
+        {/* <DataGridHeader className="row no-gutters">
+          <Col xl={3}>
+            {" "}
+            <Typography variant="h6" className="font-weight-bold">
+              Ventas realizadas
+            </Typography>
+          </Col>
+          <Col xl={9}>
+            {" "}
+            <ActionsContainer className="row">
+              <Col xl={3}>
+                
+              </Col>
+              <Col xl={6}>
+                <FormControl
+                  placeholder="Buscar por nombre"
+                  onChange={handleChangeSearch}
+                ></FormControl>
+
+              </Col>
+              <Col xl={3}>
+                
+              </Col>
+            </ActionsContainer>
+          </Col>
+        </DataGridHeader> */}
         <DataGridContainer ref={dataGridContent}>
-          <DataGrid theme={theme}>
+          <DataGridCustomerOrders theme={theme}>
             <div className="header-column">
               <Typography>Código</Typography>
-            </div>
-            <div className="header-column">
-              <Typography>Tipo</Typography>
             </div>
             <div className="header-column">
               <Typography>Fecha</Typography>
             </div>
             <div className="header-column">
-              <Typography>Contacto</Typography>
+              <Typography>Monto facturado</Typography>
             </div>
             <div className="header-column">
               <Typography>Estado</Typography>
             </div>
 
             {!current.matches("dataError") ? (
-              !isEmpty(current.context.pedidos) ? (
-                current.context.pedidos.map((pedido, index) => (
-                  <Fragment key={index}>
+              !isEmpty(current.context.invoices) ? (
+                current.context.invoices.map((invoice, index) => (
+                  <Fragment
+                    key={index}
+                  >
                     <div
+                      className="cell"
                       onClick={() => {
-                        handleOrder(pedido);
-                      }}
-                      className="justify-content-center"
-                    >
-                      {pedido.nuevo && (<Badge badgeContent={"¡Nueva!"} color="error">
-                      </Badge>)}
-                      <Typography className="ml-3">{pedido.codigo}</Typography>
+                        handleViewInvoice(invoice);
+                      }}>
+                      <Typography>{invoice.codigo}</Typography>
                     </div>
                     <div
+                      className="cell"
                       onClick={() => {
-                        handleOrder(pedido);
-                      }}
-                    >
-                      <SvgIcon
-                        component={TIPO_PEDIDO[parseInt(pedido.tipo) - 1].icon}
-                        className="mr-2 delivery-icon"
-                      ></SvgIcon>
-                      <Typography>
-                        {TIPO_PEDIDO[parseInt(pedido.tipo) - 1].tipo}
+                        handleViewInvoice(invoice);
+                      }}>
+                      <Typography variant="subtitle1">
+                        {DateTime.fromISO(invoice.created_at)
+                          .setLocale("es")
+                          .toLocaleString(DateTime.DATE_HUGE)}
                       </Typography>
                     </div>
                     <div
+                      className="cell"
                       onClick={() => {
-                        handleOrder(pedido);
-                      }}
-                    >
-                      <Typography>
-                        {handleDateReFormat(pedido.fecha_creacion)}
+                        handleViewInvoice(invoice);
+                      }}>
+
+                      <Typography className="font-weight-bold">
+                        <NumberFormat
+                          //customInput={TextField}
+                          prefix="$"
+                          thousandSeparator="."
+                          decimalSeparator=","
+                          fixedDecimalScale={true}
+                          decimalScale={2}
+                          displayType={"text"}
+                          value={parseFloat(invoice.monto_venta)}
+                        />
+
                       </Typography>
                     </div>
                     <div
+                      className="cell"
                       onClick={() => {
-                        handleOrder(pedido);
-                      }}
-                    >
-                      <Typography>{pedido.contacto_numero}</Typography>
-                    </div>
-                    <div
-                      onClick={() => {
-                        handleOrder(pedido);
-                      }}
-                    >
-                      <span
-                        className={`dot ${ESTADOS_PEDIDO[pedido.status].class}`}
-                      ></span>
-                      <Typography>
-                        {ESTADOS_PEDIDO[pedido.status].estado}
-                      </Typography>
+                        handleViewInvoice(invoice);
+                      }}>
+                      <Typography>{ESTADOS_FACTURA[parseInt(invoice.status) - 1].estado}</Typography>
                     </div>
                   </Fragment>
                 ))
@@ -149,13 +166,16 @@ const CustomerOrders = ({sendParent,currentParent}) => {
                 <MainColumn>
                   <Row className="w-100">
                     <Col
-                      className="text-center d-flex justify-content-center"
+                      className="text-center d-flex justify-content-center align-items-center loading"
                       xl={12}
                     >
-                      {current.matches("dataReady") && (
+                      {current.matches("dataReady") ? (
                         <Typography variant="h5" className="mt-3">
                           {current.context.responseMsg}
                         </Typography>
+                      ) : (
+                        <LoadingSpinner />
+
                       )}
                     </Col>
                   </Row>
@@ -175,7 +195,7 @@ const CustomerOrders = ({sendParent,currentParent}) => {
                       variant="contained"
                       color="primary"
                       onClick={() => {
-                        send({ type: "FETCHORDERS" });
+                        send({ type: "FETCHPRODUCTS" });
                       }}
                     >
                       Reintentar
@@ -184,7 +204,7 @@ const CustomerOrders = ({sendParent,currentParent}) => {
                 </Row>
               </MainColumn>
             )}
-          </DataGrid>
+          </DataGridCustomerOrders>
         </DataGridContainer>
       </Col>
       {!current.matches("dataError") && (

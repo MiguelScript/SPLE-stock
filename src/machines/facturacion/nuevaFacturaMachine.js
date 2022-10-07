@@ -235,7 +235,7 @@ export const nuevaFacturaMachine = Machine(
                 subtotal: (_ctx, evt) =>
                     _ctx.products.reduce(
                         (accumulator, product) =>
-                            parseFloat(product.precio_costo) * product.quantityInInvoice + accumulator,
+                            parseFloat(product.precio_venta) * product.quantityInInvoice + accumulator,
                         0
                     ),
             }),

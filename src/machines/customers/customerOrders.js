@@ -10,7 +10,7 @@ export const customerOrdersMachine = Machine(
     context: {
       responseMsg: "",
       search: "",
-      pedidos: [],
+      invoices: [],
       selectedNewOrders: [],
       totalPedidos: 0,
       pageInfo: {
@@ -19,7 +19,7 @@ export const customerOrdersMachine = Machine(
         limit: 10,
       },
       userRole: "",
-      customer_id:"",
+      customer_id: "",
       status: "",
       selectedOrder: "",
       showOrder: false,
@@ -28,6 +28,7 @@ export const customerOrdersMachine = Machine(
       idle: {
         on: {
           FETCHORDERS: { target: "fetchOrders", actions: "setUserRole" },
+          SETORDERS: { target: "dataReady", actions: ["setOrders"] },
         },
       },
       fetchOrders: {
@@ -92,15 +93,12 @@ export const customerOrdersMachine = Machine(
   {
     actions: {
       setOrders: assign({
-        pedidos: (_ctx, evt) =>
-          evt.data.data.pedidos.map((pedido) => {
-            return { ...pedido, nuevo: false };
-          }),
-        totalPedidos: (_ctx, evt) => evt.data.data.total_pedidos,
+        invoices: (_ctx, evt) => evt.orders,
+        // totalPedidos: (_ctx, evt) => evt.orders,
       }),
       setUserRole: assign({
         userRole: (_ctx, evt) => evt.data,
-        customer_id:(_ctx, evt) => evt.customer_id
+        customer_id: (_ctx, evt) => evt.customer_id
       }),
       setStatus: assign({
         status: (_ctx, evt) => evt.value,

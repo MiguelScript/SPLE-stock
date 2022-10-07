@@ -16,11 +16,10 @@ export const adminCustomersMachine = Machine(
         limit: 10,
       },
       userRole: "",
-      status: "",
+      filters: null,
       selectedCustomer: "",
       showCustomer: false,
       showOrder:false,
-      selectedOrder:""
     },
     states: {
       idle: {
@@ -35,19 +34,15 @@ export const adminCustomersMachine = Machine(
               const token = localStorage.token;
               if (token) {
                 try {
-                  let formData = new FormData();
-                  formData.append("search", _ctx.search);
-                  formData.append("limit", _ctx.pageInfo.limit);
-                  formData.append("offset", _ctx.pageInfo.offset);
-                  formData.append("status", _ctx.status);
-                  formData.append("user_rol", _ctx.userRole);
-                  const { data: customers, status } = await api.post(
-                    "/admin/clientes",
-                    formData,{
+                  let route = `?search=${_ctx.search}&page=${_ctx.pageInfo.offset}&results=${_ctx.pageInfo.limit}&filters=${_ctx.filters}`
+
+                  const { data: customers, status } = await api.get(
+                    "api/clientes" + route,
+                    {
                       headers: { Authorization: `Bearer ${token}` },
                     }
                   );
-                  resolve(customers);
+                  resolve(customers.data);
                 } catch (e) {
                   reject({
                     msg:
@@ -71,8 +66,6 @@ export const adminCustomersMachine = Machine(
           PREVPAGE: { actions: "prevPage", target: "fetchCustomers" },
           CLICKPAGE: { actions: "onClickPage", target: "fetchCustomers" },
           SEARCH: { actions: "searchCustomers", target: "fetchCustomers" },
-          FETCHBYLIMIT: { actions: "setLimit", target: "fetchCustomers" },
-          FETCHBYSTATUS: { actions: "setStatus", target: "fetchCustomers" },
           GOTOCUSTOMER: { actions: "setCustomer" },
           GOTOORDER: { actions:"setOrder" },
           GOBACK: { actions: "goBackToCustomer"},
@@ -90,23 +83,12 @@ export const adminCustomersMachine = Machine(
   {
     actions: {
       setCustomers: assign({
-        clientes: (_ctx, evt) => evt.data.data.clientes,
-        totalClientes: (_ctx, evt) => evt.data.data.total_clientes,
-      }),
-      setUserRole: assign({
-        userRole: (_ctx, evt) => evt.data,
-      }),
-      setStatus: assign({
-        status: (_ctx, evt) => evt.value,
+        clientes: (_ctx, evt) => evt.data.data,
+        totalClientes: (_ctx, evt) => evt.data.total,
       }),
       setCustomer: assign({
         selectedCustomer: (_ctx, evt) => evt.data,
         showCustomer: true,
-      }),
-      setOrder: assign({
-        selectedOrder: (_ctx, evt) => evt.data,
-        showCustomer: false,
-        showOrder:true
       }),
       goBack: assign({
         selectedCustomer: "",
@@ -115,11 +97,6 @@ export const adminCustomersMachine = Machine(
       goBackToCustomer: assign({
         showCustomer: true,
         showOrder:false
-      }),
-      setLimit: assign({
-        pageInfo: (_ctx, evt) => {
-          return { ..._ctx.pageInfo, limit: parseInt(evt.value) };
-        },
       }),
       nextPage: assign({
         pageInfo: (_ctx, evt) => ({
