@@ -4,27 +4,12 @@ import api from "../../config/api";
 export const adminTasaDolarMachine = Machine(
   {
     id: "adminTasaDolarMachine",
-    initial: "idle",
+    initial: "fetchTasaDolarActual",
     context: {
-      selectedBank: "",
-      responseMsg: "",
-      searchByActive: true,
-      search: "",
-      tasaDolarActual: [],
-      toEdit: false,
-      toCreate: false,
-      pageInfo: {
-        actualPage: 1,
-        offset: 0,
-        limit: 8,
-      },
+      dollarRate: [],
+      responseMsg: ""
     },
     states: {
-      idle: {
-        on: {
-          FETCHTASADOLARACTUAL: { target: "fetchTasaDolarActual" },
-        },
-      },
       fetchTasaDolarActual: {
         invoke: {
           src: (_ctx, evt) =>
@@ -32,19 +17,10 @@ export const adminTasaDolarMachine = Machine(
               const token = localStorage.token;
               if (token) {
                 try {
-                  let formData = new FormData();
-                  formData.append("status", _ctx.searchByActive ? "1" : "0");
-                  const data = await api.post(
-                    "/admin/tasa-dolar/actual",
-                    formData,
-                    {
-                      headers: { Authorization: `Bearer ${token}` },
-                    }
-                  );
+                  const data = await api.get("api/tasa-dolar/actual");
                   const body = await data;
-                  console.log(body);
-                  if (data.status == 200) {
-                    resolve(body);
+                  if (data.status === 200) {
+                    resolve(body.data);
                   } else {
                     reject(body);
                   }
@@ -61,21 +37,6 @@ export const adminTasaDolarMachine = Machine(
       },
       dataReady: {
         on: {
-          GOTOEDIT: { actions: "goToEdit" },
-          GOTOCREATE: { actions: "goToCreate" },
-          GOTODATATABLE: {
-            actions: "goToDatatable",
-            target: "fetchTasaDolarActual",
-          },
-          GOBACK: { actions: "goToDatatable" },
-          NEXTPAGE: { actions: "nextPage", target: "fetchTasaDolarActual" },
-          PREVPAGE: { actions: "prevPage", target: "fetchTasaDolarActual" },
-          CLICKPAGE: { actions: "onClickPage", target: "fetchTasaDolarActual" },
-          SEARCH: { actions: "searchBanks", target: "fetchTasaDolarActual" },
-          SETSEARCHBYACTIVE: {
-            actions: "toggleActiveSearch",
-            target: "fetchTasaDolarActual",
-          },
         },
       },
     },
@@ -83,7 +44,7 @@ export const adminTasaDolarMachine = Machine(
   {
     actions: {
       setTasaDolarActual: assign({
-        tasaDolarActual: (_ctx, evt) => evt.data.data.tasa_dolar,
+        dollarRate: (_ctx, evt) => evt.data.data,
         fetchError: false,
       }),
       goToEdit: assign({

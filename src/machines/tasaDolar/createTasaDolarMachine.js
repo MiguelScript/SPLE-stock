@@ -8,7 +8,7 @@ export const CreateTasaDolarMachine = Machine(
       initial: "editingForm",
       context: {
         formData: {
-          tasaDolar: "",
+          rate: "",
         },
         responseMsg: "",
       },
@@ -32,13 +32,13 @@ export const CreateTasaDolarMachine = Machine(
                 try {
                   let formData = new FormData();
                   const {
-                    tasaDolar,
+                    rate,
                   } = _ctx.formData;
 
-                  formData.append("tasa", tasaDolar);
+                  formData.append("rate", rate);
           
                   const response = await api.post(
-                    "/admin/tasa-dolar/crear",
+                    "/api/tasa-dolar",
                     formData,{
                       headers: { Authorization: `Bearer ${token}` },
                     }
@@ -46,7 +46,7 @@ export const CreateTasaDolarMachine = Machine(
                   const body = await response;
                   console.log(body);
 
-                  if (response.status === 200) {
+                  if (response.status === 201) {
                     resolve(body);
                   } else {
                     reject(body.msg);
@@ -85,7 +85,7 @@ export const CreateTasaDolarMachine = Machine(
           },
         }),
         setResponseMsg: assign({
-          responseMsg: (_ctx, evt) => evt.data.data.msg,
+          responseMsg: (_ctx, evt) => evt.data.data,
         }),
         clearResponseMsg: assign({
           responseMsg: "",

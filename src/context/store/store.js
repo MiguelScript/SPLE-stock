@@ -19,9 +19,8 @@ const dollarRateMachine = Machine(
                     src: (_ctx, evt) =>
                         new Promise(async (resolve, reject) => {
                             try {
-                                const data = await api.get("api/obtener-tasa-dolar-actual");
+                                const data = await api.get("api/tasa-dolar/actual");
                                 const body = await data;
-
                                 if (data.status === 200) {
                                     resolve(body.data);
                                 } else {
@@ -42,7 +41,7 @@ const dollarRateMachine = Machine(
     {
         actions: {
             setDollarRate: assign({
-                dollarRate: (_ctx, evt) => evt.data,
+                dollarRate: (_ctx, evt) => evt.data.data,
             }),
             setResponseMsg: assign({
                 responseMsg: (_ctx, evt) => {

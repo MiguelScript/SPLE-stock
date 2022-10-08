@@ -64,8 +64,8 @@ const TasaDolar = ({ closeDrawer }) => {
     })
   );
   let tasaDolarErrorMessage = simpleValidator.current.message(
-    "Tasadolar",
-    current.context.formData.tasaDolar,
+    "rate",
+    current.context.formData.rate,
     "required",
     { messages: { required: "La tasa del dolar es necesaria" } }
   );
@@ -78,7 +78,6 @@ const TasaDolar = ({ closeDrawer }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name + ': ' + value);
     send({ type: "SETDATA", name, value });
   };
   const handleSubmit = (e) => {
@@ -94,7 +93,7 @@ const TasaDolar = ({ closeDrawer }) => {
   };
 
   useEffect(() => {
-    sendParent({ type: 'FETCHTASADOLARACTUAL' })
+    sendParent({ type: 'FETCH' })
   }, []);
 
   useEffect(() => {
@@ -106,8 +105,6 @@ const TasaDolar = ({ closeDrawer }) => {
     }
   }, [current]);
 
-  console.log(current);
-
   return (
     <Container className={classes.formContainer}>
       {!current.matches("completedForm") ? (
@@ -116,7 +113,7 @@ const TasaDolar = ({ closeDrawer }) => {
             <Col md={12}>
               <Form.Group controlId="exampleForm.ControlInput5">
                 <Typography>
-                  La tasa actual del dolar manejada es: {currentParent.context.tasaDolarActual.tasa}Bs.S
+                  La tasa actual del dolar manejada es: Bs. {currentParent.context.dollarRate.tasa}
                 </Typography>
               </Form.Group>
             </Col>
@@ -132,7 +129,7 @@ const TasaDolar = ({ closeDrawer }) => {
                 <TextField
                   label="Nueva tasa dolar y euro"
                   variant="outlined"
-                  name="tasaDolar"
+                  name="rate"
                   onChange={handleChange}
                   required={tasaDolarErrorMessage}
                   fullWidth
