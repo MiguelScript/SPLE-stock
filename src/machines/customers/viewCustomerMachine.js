@@ -55,6 +55,7 @@ export const viewCustomerMachine = Machine(
             target: "fetch",
           },
           GOBACK: { actions: "goToDatatable" },
+          FETCHTCUSTOMER: { target: "fetch" },
         },
       },
     },

@@ -20,6 +20,8 @@ import Customer from "./Customer/Customer";
 import { ESTADOS_CLIENTES } from "../../config/constants";
 import Order from '../../pages/Orders/Order/Order';
 import { useHistory } from "react-router-dom";
+import { ReusableDrawerDispatchContext } from "../../context/ReusableDrawer/reusable-drawer";
+import CustomerForm from "./Drawer/CustomerForm";
 const ActionsContainer = styled.div`
   display: flex;
 `;
@@ -35,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
 const Customers = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const reusableDrawerDispatch = React.useContext(
+    ReusableDrawerDispatchContext
+  );
   let history = useHistory();
   const [current, send] = useMachine(adminCustomersMachine);
   const authState = useContext(AuthStateContext);
@@ -43,6 +48,21 @@ const Customers = () => {
   const handleChangeSearch = (e) => {
     const { value } = e.target;
     send({ type: "SEARCH", value });
+  };
+
+  const handleCreate = () => {
+    reusableDrawerDispatch({
+      type: "OPENDRAWER",
+      drawerProps: {
+        layout: {
+          title: "Crear cliente",
+        },
+        goToDatagrid: () => {
+          send({ type: "GOTODATAGRID" });
+        },
+      },
+      component: CustomerForm,
+    });
   };
 
   const handleViewCustomer = (customer) => {
@@ -83,20 +103,20 @@ const Customers = () => {
                       <option value="2">{ESTADOS_CLIENTES[1].estado}</option>
                     </FormControl> */}
               </Col>
-              <Col xl={3}>
-                {/* <FormControl as="select" onChange={handleFilter} name="limit">
-                    <option value="">Número de clientes</option>
-                    <option value="10">{10}</option>
-                    <option value="25">{25}</option>
-                    <option value="50">{50}</option>
-                    <option value="100">{100}</option>
-                  </FormControl> */}
-              </Col>
               <Col xl={6}>
                 <FormControl
                   placeholder="Buscar por Nombre"
                   onChange={handleChangeSearch}
                 ></FormControl>
+              </Col>
+              <Col xl={3}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleCreate}
+                >
+                  Nuevo cliente
+                </Button>
               </Col>
             </ActionsContainer>
           </Col>
